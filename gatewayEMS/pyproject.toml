@@ -1,0 +1,13 @@
+[project]
+name = "gatewayems"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.116.1",
+    "pydantic>=2.11.7",
+    "pymodbus>=3.11.2",
+    "pyserial>=3.5",
+    "requests>=2.32.5",
+]

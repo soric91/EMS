@@ -1,0 +1,24 @@
+services:
+  gateway:
+    build:
+      context: ./gatewayEMS
+      dockerfile: Dockerfile
+    container_name: gateway_ems
+    env_file:
+      - .env
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ./gatewayEMS:/gatewayEMS
+    networks:
+      - networkEMS
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    group_add:
+      - dialout
+    restart: unless-stopped
+
+
+networks:
+  networkEMS:
+    driver: bridge
