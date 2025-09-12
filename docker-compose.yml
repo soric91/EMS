@@ -1,23 +1,75 @@
 services:
-  gateway:
+  gatewayems:
     build:
       context: ./gatewayEMS
       dockerfile: Dockerfile
     container_name: gateway_ems
-    env_file:
-      - .env
-    environment:
-      - TZ=${TZ}
+
     volumes:
       - ./gatewayEMS:/gatewayEMS
+      - ./Config/config.ini:/gatewayEMS/config/config.ini
     networks:
       - networkEMS
     devices:
       - /dev/ttyUSB0:/dev/ttyUSB0
     group_add:
       - dialout
-    restart: unless-stopped
+ 
+  gatewayapi:
+    build:
+      context: ./gatewayApi
+      dockerfile: Dockerfile
+    container_name: api_ems
+    env_file:
+      - .env
+    ports:
+      - "${api_port}:8000"
+    environment:
+      - api_port=${api_port}
+    volumes:
+      - ./Config/config.ini:/gatewayApi/config/config.ini
+      - ./gatewayApi:/gatewayApi
+    networks:
+      - networkEMS
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
 
+    group_add:
+      - dialout
+
+  database_ems:
+    image: mongo:4.0
+    container_name: db_ems
+    env_file:
+      - .env
+    ports:
+      - "${db_port}:27017"
+    environment:
+      - db_port=${db_port}
+      - MONGO_INITDB_ROOT_USERNAME=${db_user}
+      - MONGO_INITDB_ROOT_PASSWORD=${db_password}
+      - MONGO_INITDB_DATABASE=${db_name}
+    volumes:
+      - db_data:/data/db
+    networks:
+      - networkEMS
+
+  web:
+    build:
+      context: ./WebServer
+      dockerfile: Dockerfile
+    container_name: web_ems
+    env_file:
+      - .env
+    ports:
+      - "${port}:3000"
+    environment:
+      - port=${port}
+    networks:
+      - networkEMS
+
+volumes:
+  db_data:
 
 networks:
   networkEMS:
