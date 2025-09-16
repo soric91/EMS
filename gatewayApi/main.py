@@ -1,7 +1,7 @@
 
 from src.util.logging import get_logger
 from src.core.config import settings
-from src.repositories.user_repository import create_user
+from src.repositories.repository import create_user
 from src.models.model import KeysNames
 import asyncio
 logger = get_logger(__name__)

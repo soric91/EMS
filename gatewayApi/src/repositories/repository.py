@@ -1,7 +1,7 @@
 from typing import Dict, Optional
 from datetime import timedelta
 from src.models.model import CollectionNames, UserLoginResponse, User, KeysNames
-from src.services.user_service import get_document_by_dict, insert_data
+from src.services.service import get_document_by_dict, insert_data
 from src.util.logging import get_logger
 from src.auth.security import hash_password, verify_password, create_access_token, create_refresh_token
 from src.core.config import settings
