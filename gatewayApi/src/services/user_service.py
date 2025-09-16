@@ -1,5 +1,5 @@
 from typing import Dict, Any
-from src.database.connection import get_database
+from src.database.connection import get_database, close_connection
 from src.util.logging import get_logger
 from bson import ObjectId
 
@@ -16,6 +16,8 @@ async def get_document_by_dict(data: Dict[str, str] , collection: str) -> Dict[s
 
     except Exception as e:
         logger.error(f"Error al obtener el usuario por nombre de usuario: {e}")
+    finally:
+        await close_connection()
 
     return None
 
@@ -25,6 +27,9 @@ async def insert_data(data: Dict, collection: str) -> ObjectId | None:
         Database = await get_database()
         result = await Database[collection].insert_one(data)
         return result.inserted_id
+    
     except Exception as e:
         logger.error(f"Error al crear el usuario: {e}")
+    finally:
+        await close_connection()
     return None
