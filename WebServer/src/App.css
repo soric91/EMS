@@ -1,1 +1,24 @@
-@import 'tailwindcss'; 
+@import 'tailwindcss';
+
+:root {
+  --surface: 215 52% 9%;     /* #0F1720 */
+  --surface-elevated: 215 45% 12%;
+  --foreground: 205 31% 91%; /* #E6EEF3 */
+  --foreground-muted: 205 23% 71%; /* #A9BAC8 */
+  --primary: 171 100% 38%;   /* #00C2A8 */
+  --primary-foreground: 221 67% 5%;
+  --secondary: 251 81% 67%;  /* #7C5CFF */
+  --secondary-foreground: 0 0% 100%;
+  --success: 154 71% 45%;    /* #1BC47D */
+  --warning: 37 100% 56%;    /* #FFB020 */
+  --danger: 352 100% 66%;    /* #FF4D6D */
+  --border: 0 0% 100% / 0.04;
+  --input: 215 52% 9%;
+  --ring: 171 100% 38%;
+  --radius: 0.5rem;
+}
+
+body {
+  background: hsl(221, 67%, 5%);
+  color: hsl(var(--foreground));
+}

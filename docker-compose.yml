@@ -7,11 +7,12 @@ services:
 
     volumes:
       - ./gatewayEMS:/gatewayEMS
-      - ./Config/config.ini:/gatewayEMS/config/config.ini
+      - ./Shared/config.ini:/gatewayEMS/config/config.ini
+      - ./Shared/gateway_ems.log:/gatewayEMS/log/gateway_ems.log
     networks:
       - networkEMS
-    devices:
-      - /dev/ttyUSB0:/dev/ttyUSB0
+    # devices:
+    #   - /dev/ttyUSB0:/dev/ttyUSB0
     group_add:
       - dialout
  
@@ -20,25 +21,24 @@ services:
       context: ./gatewayApi
       dockerfile: Dockerfile
     container_name: api_ems
-    env_file:
-      - .env
-    ports:
-      - "${api_port}:8000"
-    environment:
-      - api_port=${api_port}
+ 
     volumes:
-      - ./Config/config.ini:/gatewayApi/config/config.ini
+      - ./Shared/config.ini:/gatewayApi/src/config/config.ini
       - ./gatewayApi:/gatewayApi
+      - ./Shared/gateway_ems.log:/gatewayApi/src/log/gateway_ems.log
     networks:
       - networkEMS
-    devices:
-      - /dev/ttyUSB0:/dev/ttyUSB0
+    # devices:
+    #   # - /dev/ttyUSB0:/dev/ttyUSB0
 
     group_add:
       - dialout
 
+    depends_on:
+      - database_ems
+
   database_ems:
-    image: mongo:4.0
+    image: mongo:4.2
     container_name: db_ems
     env_file:
       - .env
@@ -74,3 +74,4 @@ volumes:
 networks:
   networkEMS:
     driver: bridge
+    
