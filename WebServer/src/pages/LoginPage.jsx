@@ -1,9 +1,23 @@
 import Login from "../components/Login/Login"
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useGlobalState } from "../context/GlobalState.jsx";
+
 /**
  * Página de login principal
  * Layout y estructura visual del login
  */
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useGlobalState();
+
+  // Solo redirigir si ya está autenticado, no limpiar tokens automáticamente
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/home');
+    }
+  }, [isAuthenticated, navigate]);
+
   return (
     <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4">
       <div className="w-full max-w-md space-y-8">

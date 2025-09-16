@@ -146,19 +146,19 @@ const Homepage = () => {
   const { user, isAuthenticated } = useGlobalState();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (!user && !isAuthenticated) {
-  //     navigate("/login");  
-  //   }
-  // }, [isAuthenticated, user, navigate]);
+  useEffect(() => {
+    if (!user && !isAuthenticated) {
+      navigate("/login");  
+    }
+  }, [isAuthenticated, user, navigate]);
 
-  // if (!user && !isAuthenticated) {
-  //   return (
-  //     <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-  //       <div className="text-zinc-100">Verificando autenticación...</div>
-  //     </div>
-  //   );
-  // }
+  if (!user && !isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+        <div className="text-zinc-100">Verificando autenticación...</div>
+      </div>
+    );
+  }
 
   return (
   <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col">

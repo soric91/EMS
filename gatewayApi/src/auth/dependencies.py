@@ -5,9 +5,10 @@ from typing import Annotated, Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from src.auth.security import verify_token, get_user_from_token
-from src.database.dependencies import Database
-from src.models.model import User, TokenData, KeysNames
+from src.database.connection import get_database
+from src.models.model import User, TokenData, KeysNames, CollectionNames
 from src.util.logging import get_logger
+from motor.motor_asyncio import AsyncIOMotorDatabase
 
 logger = get_logger(__name__)
 
@@ -24,7 +25,7 @@ oauth2_scheme = OAuth2PasswordBearer(
 async def get_current_user(
     security_scopes: SecurityScopes,
     token: Annotated[str, Depends(oauth2_scheme)],
-    db: Database
+    db: AsyncIOMotorDatabase = Depends(get_database)
 ) -> User:
     """
     Obtiene el usuario actual basado en el token JWT

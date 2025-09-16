@@ -43,4 +43,4 @@ RUN --mount=type=cache,target=/root/.cache/uv uv sync --frozen --no-install-proj
 # ──────────────────────
 # Comando principal
 # ──────────────────────
-CMD ["uv", "run", "-m", "main"]
+CMD ["sh", "-c", "uv run -m src.scripts.init_admin && uv run -m main"]

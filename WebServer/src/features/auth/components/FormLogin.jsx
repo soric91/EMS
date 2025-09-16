@@ -16,37 +16,30 @@ function FormLogin() {
     } = useForm();
 
     // Global State para autenticación
-    const { loginUser, isLoading, error, clearError } = useGlobalState();
+    const { loginUser, isLoading, error } = useGlobalState();
     
     // React Router para navegación
     const navigate = useNavigate();
 
     const onSubmit = async (data) => {
-        clearError(); // Limpiar errores previos
-        console.log("=== INTENTANDO LOGIN ===");
-        console.log("Usuario:", data.usuario);
-        console.log("Password:", data.password);
-        
         try {
             const result = await loginUser({
-                usuario: data.usuario,
+                username: data.username,
                 password: data.password
             });
             
-            if (result.success) {
-                console.log("Login exitoso:", result.user);
+            if (result && result.success) {
                 navigate('/home');
-            } else {
-                console.log("Login fallido:", result.error);
-                setError("root", {
-                    message: result.error || "Credenciales incorrectas"
-                });
             }
+            // No establecer error adicional aquí - el GlobalState ya maneja los errores
         } catch (err) {
             console.error("Error en login:", err);
-            setError("root", {
-                message: "Error de conexión"
-            });
+            // Solo manejar errores de conexión que no lleguen al GlobalState
+            if (!err.response) {
+                setError("root", {
+                    message: "Error de conexión"
+                });
+            }
         }
     };
 
@@ -55,7 +48,7 @@ function FormLogin() {
             <div className="space-y-4">
                 <div>
                     <InputUserLogin
-                        {...register("usuario", {
+                        {...register("username", {
                             required: "El usuario es obligatorio",
                             minLength: {
                                 value: 3,
@@ -64,9 +57,9 @@ function FormLogin() {
                         })}
                         className="w-full px-4 py-2 rounded-lg bg-zinc-900/70 text-zinc-100 border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                    {errors.usuario && (
+                    {errors.username && (
                         <p className="mt-1 text-sm text-red-400">
-                            {errors.usuario.message}
+                            {errors.username.message}
                         </p>
                     )}
                 </div>
@@ -104,7 +97,15 @@ function FormLogin() {
             {error && (
                 <div className="text-center">
                     <p className="text-sm text-red-400">
-                        {error}
+                        {typeof error === 'object' ? JSON.stringify(error) : error}
+                    </p>
+                </div>
+            )}
+            {/* Mostrar error del formulario si existe */}
+            {errors.root && (
+                <div className="text-center">
+                    <p className="text-sm text-red-400">
+                        {errors.root.message}
                     </p>
                 </div>
             )}

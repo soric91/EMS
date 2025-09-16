@@ -1,12 +1,49 @@
-2025-09-16 14:52:08,844 - main - INFO - Gateway API is starting...
-2025-09-16 14:52:08,866 - connection - INFO - Conexión exitosa a MongoDB
-2025-09-16 14:52:08,868 - connection - INFO - Conexión a MongoDB cerrada
-2025-09-16 14:52:08,869 - user_repository - WARNING - El nombre de usuario admin ya existe.
-2025-09-16 14:52:08,869 - main - WARNING - No se pudo crear el usuario.
-2025-09-16 14:52:43,750 - main - INFO - Gateway API is starting...
-2025-09-16 14:52:43,773 - connection - INFO - Conexión exitosa a MongoDB
-2025-09-16 14:52:43,775 - connection - INFO - Conexión a MongoDB cerrada
-2025-09-16 14:52:44,212 - connection - INFO - Conexión exitosa a MongoDB
-2025-09-16 14:52:44,215 - connection - INFO - Conexión a MongoDB cerrada
-2025-09-16 14:52:44,215 - user_repository - INFO - Usuario admin creado con ID: 68c979bcfb5d76a606b35b28
-2025-09-16 14:52:44,229 - main - INFO - Usuario creado exitosamente: admin
+2025-09-16 14:40:36,343 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 14:40:40,099 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 14:43:05,721 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 14:43:42,316 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 14:53:17,988 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 14:53:32,497 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 14:54:02,525 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 14:57:49,859 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 14:58:15,332 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 14:59:36,687 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 15:00:11,354 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 16:48:19,531 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 16:48:42,903 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 17:02:49,314 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 17:03:25,081 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 17:04:48,466 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 17:13:52,226 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 17:14:02,146 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 17:14:31,797 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 17:31:44,569 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 17:31:55,447 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 17:44:49,946 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 17:45:04,985 - service - WARNING - Contraseña incorrecta para usuario: admin
+2025-09-16 17:45:04,985 - login - WARNING - Intento de login fallido para usuario: admin
+2025-09-16 17:45:08,634 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 17:46:38,472 - service - WARNING - Contraseña incorrecta para usuario: admin
+2025-09-16 17:46:38,473 - login - WARNING - Intento de login fallido para usuario: admin
+2025-09-16 17:46:43,112 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 17:48:52,832 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 17:50:04,221 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 17:56:35,490 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 17:59:59,398 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 18:00:20,882 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 18:12:11,721 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 18:12:19,169 - service - WARNING - Contraseña incorrecta para usuario: admin
+2025-09-16 18:12:19,169 - login - WARNING - Intento de login fallido para usuario: admin
+2025-09-16 18:12:21,263 - service - WARNING - Contraseña incorrecta para usuario: admin
+2025-09-16 18:12:21,264 - login - WARNING - Intento de login fallido para usuario: admin
+2025-09-16 18:12:22,234 - service - WARNING - Contraseña incorrecta para usuario: admin
+2025-09-16 18:12:22,234 - login - WARNING - Intento de login fallido para usuario: admin
+2025-09-16 18:12:22,765 - service - WARNING - Contraseña incorrecta para usuario: admin
+2025-09-16 18:12:22,765 - login - WARNING - Intento de login fallido para usuario: admin
+2025-09-16 18:12:23,192 - service - WARNING - Contraseña incorrecta para usuario: admin
+2025-09-16 18:12:23,192 - login - WARNING - Intento de login fallido para usuario: admin
+2025-09-16 18:12:26,718 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 18:21:46,856 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 18:21:59,792 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 18:22:54,145 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 18:23:02,767 - login - INFO - Usuario autenticado exitosamente: admin

@@ -9,5 +9,9 @@ export default defineConfig({
     favicon: 'src/Asset/icons/activity.svg',
   },
 
-  
+  source: {
+    define: {
+      'process.env.PUBLIC_URL_API': JSON.stringify(process.env.PUBLIC_URL_API || 'http://localhost:8000'),
+    },
+  },
 });

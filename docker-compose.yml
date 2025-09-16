@@ -15,7 +15,7 @@ services:
     #   - /dev/ttyUSB0:/dev/ttyUSB0
     group_add:
       - dialout
- 
+
   gatewayapi:
     build:
       context: ./gatewayApi
@@ -30,12 +30,22 @@ services:
       - networkEMS
     # devices:
     #   # - /dev/ttyUSB0:/dev/ttyUSB0
+    env_file:
+      - .env
+    environment:
+      - API_HOST=${API_HOST}
+      - API_PORT=${API_PORT}
 
+    ports:
+      - "${API_PORT}:8000"
     group_add:
       - dialout
 
     depends_on:
       - database_ems
+
+
+  
 
   database_ems:
     image: mongo:4.2

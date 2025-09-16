@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useReducer } from "react";
+import { createContext, useContext, useReducer } from "react";
 import  {AppReducer}  from "./AppReducer";
 import { apiLoginUser } from "../api/apiUser";
 
@@ -27,36 +27,61 @@ export const useGlobalState = () => {
 
 
 export const GlobalProvider = ({ children }) => {
-	const [state,  dispatch] = useReducer(AppReducer, initialState)
+	// Función para inicializar el estado desde localStorage
+	const initializeState = () => {
+		try {
+			const localToken = localStorage.getItem("token");
+			const localUser = localStorage.getItem("user");
+			
+			return {
+				...initialState,
+				token: localToken || null,
+				user: localUser ? JSON.parse(localUser) : null
+			};
+		} catch (error) {
+			// Si hay error al parsear, limpiar localStorage y usar estado inicial
+			console.error("Error al cargar datos del localStorage:", error);
+			localStorage.removeItem("token");
+			localStorage.removeItem("user");
+			return initialState;
+		}
+	};
 
-	const loginUser = async ({ usuario, password }) => {
+	const [state, dispatch] = useReducer(AppReducer, null, initializeState);
+
+
+	const loginUser = async ({ username, password }) => {
 
 	dispatch({ type: "LOGIN_START" });
 	try {
-		const res = await apiLoginUser({ usuario, password });
+	
+		const res = await apiLoginUser({ username: username,  password: password });
 		const data = await res.data;
-		if (res.status === 200 && data.success) {
-
-			if (data.token) localStorage.setItem("token", data.token);
-
-			dispatch({ type: "LOGIN_SUCCESS", payload: { user: data.user, token: data.token } });
+	
+		if (res.status === 200 && data.access_token) {
+			// Guardar tanto el token como el usuario en localStorage
+			localStorage.setItem("token", data.access_token);
+			if (data.user) {
+				localStorage.setItem("user", JSON.stringify(data.user));
+			}
+			dispatch({ type: "LOGIN_SUCCESS", payload: { user: data.user, token: data.access_token } });
 			return { success: true, user: data.user };
-
 		} else {
-			dispatch({ type: "LOGIN_ERROR", payload: data.message });
-			return { success: false, error: data.message || "Credenciales incorrectas" };
+			dispatch({ type: "LOGIN_ERROR", payload: data.detail || "Credenciales incorrectas" });
+			return { success: false, error: data.detail || "Credenciales incorrectas" };
 		}
 	} catch (error) {
-		console.error("Error en loginUser:", error);
-		dispatch({ type: "LOGIN_ERROR", payload: "Error en el login" });
+		const errorMessage = error.response?.data?.detail || "Error en el login";
+		dispatch({ type: "LOGIN_ERROR", payload: errorMessage });
+		return { success: false, error: errorMessage };
 	} finally {
-		setIsLoading(false);
+		dispatch({ type: "LOGIN_END" });
 	}
 };
 
 const logOutUser = () => {
 	localStorage.removeItem("token");
-
+	localStorage.removeItem("user");
 	dispatch({ type: "LOGOUT" });
 }
 

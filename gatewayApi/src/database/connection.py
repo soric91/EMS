@@ -15,10 +15,7 @@ async def get_database() -> AsyncIOMotorDatabase:
     global _client
     if _client is None:
         try:
-            _client = AsyncIOMotorClient(settings.mongodb_uri)
-            await _client.admin.command("ping")
-            logger.info("Conexión exitosa a MongoDB")
-        
+            _client = AsyncIOMotorClient(settings.mongodb_uri)        
         except Exception as e:
             logger.error(f"Error al conectar a MongoDB: {e}")
             raise
@@ -31,8 +28,10 @@ async def close_connection() -> None:
     global _client
     if _client:
         _client.close()
-        logger.info("Conexión a MongoDB cerrada")
         _client = None
+    else:
+        logger.warning("No hay conexión activa para cerrar.")
+        
 
 
 
