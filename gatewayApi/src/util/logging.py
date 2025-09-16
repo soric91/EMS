@@ -47,3 +47,6 @@ def get_logger(name: str = None) -> logging.Logger:
         name = frame.f_globals.get('__name__', 'unknown')
     
     return logging.getLogger(name)
+
+# Configurar logging al importar el módulo
+_setup_logging()

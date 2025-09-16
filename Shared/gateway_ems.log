@@ -1,4 +1,8 @@
-2025-09-16 03:43:58,513 - __main__ - INFO - Gateway API is starting...
-2025-09-16 03:43:58,661 - src.database.connection - INFO - Conexión exitosa a MongoDB
-2025-09-16 03:43:59,156 - src.repositories.user_repository - INFO - Usuario admin creado con ID: 68c8dcffad294ba2056f1b61
-2025-09-16 03:43:59,173 - __main__ - INFO - Usuario creado exitosamente: admin
+2025-09-16 03:53:24,696 - main - INFO - Gateway API is starting...
+2025-09-16 03:53:24,729 - connection - INFO - Conexión exitosa a MongoDB
+2025-09-16 03:53:24,734 - user_repository - WARNING - El nombre de usuario admin ya existe.
+2025-09-16 03:53:24,734 - main - WARNING - No se pudo crear el usuario.
+2025-09-16 03:53:51,882 - main - INFO - Gateway API is starting...
+2025-09-16 03:53:51,913 - connection - INFO - Conexión exitosa a MongoDB
+2025-09-16 03:53:52,417 - user_repository - INFO - Usuario admin creado con ID: 68c8df50170938dd2670b9fb
+2025-09-16 03:53:52,430 - main - INFO - Usuario creado exitosamente: admin

@@ -8,3 +8,6 @@ env.bak/
 venv.bak/
 
 change.sh
+
+
+.env.local
