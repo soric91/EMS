@@ -193,12 +193,11 @@ export default function DeviceManagement() {
       
       if (editDevice) {
         // Estamos editando un dispositivo existente
-        console.log('Actualizando dispositivo ID:', editDevice.id, 'con datos:', deviceData);
+       
         const updatedDevice = emsDataManager.updateDevice(editDevice.id, deviceData);
-        console.log('Resultado del update:', updatedDevice);
+
         
         if (updatedDevice) {
-          console.log('Dispositivo actualizado exitosamente');
           loadDevices();
           loadStats();
           handleCloseModal();
@@ -210,7 +209,7 @@ export default function DeviceManagement() {
         }
       } else {
         // Estamos agregando un nuevo dispositivo
-        console.log('Agregando nuevo dispositivo:', deviceData);
+    
         const addedDevice = emsDataManager.addDevice(deviceData);
         
         if (addedDevice) {
@@ -237,12 +236,6 @@ export default function DeviceManagement() {
 
   const handleOpenModal = () => {
     setEditDevice(null); // Limpiar dispositivo en edición
-    setIsModalOpen(true);
-  };
-
-  const handleEditDevice = (device) => {
-    console.log('Abriendo modal para editar:', device);
-    setEditDevice(device); // Establecer el dispositivo a editar
     setIsModalOpen(true);
   };
 

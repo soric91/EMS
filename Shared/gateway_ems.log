@@ -95,3 +95,5 @@
 2025-09-16 22:52:03,303 - login - INFO - Usuario autenticado exitosamente: admin
 2025-09-16 22:55:45,809 - connection - WARNING - No hay conexión activa para cerrar.
 2025-09-16 22:58:54,378 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 23:16:57,221 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 23:17:07,261 - login - INFO - Usuario autenticado exitosamente: admin
