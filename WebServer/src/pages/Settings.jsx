@@ -1,7 +1,7 @@
 import { useGlobalState } from '../context/GlobalState.jsx';
 import { Navigate } from 'react-router-dom';
 
-export default function Settings() {
+const Settings = () => {
   const { user } = useGlobalState();
 
   // Validación adicional por si alguien accede por URL
@@ -16,3 +16,5 @@ export default function Settings() {
     </div>
   );
 }
+
+export default Settings;

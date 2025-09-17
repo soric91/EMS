@@ -1,9 +1,13 @@
 import { Menu } from 'lucide-react';
+import { useSidebar } from '../../hooks/useSidebar.js';
 
 /**
  * Botón para toggle del menú sidebar
+ * Utiliza el hook useSidebar para obtener el estado
  */
-export default function MenuToggle({ isOpen, onClick }) {
+export default function MenuToggle({ onClick }) {
+  const { isOpen } = useSidebar();
+
   return (
     <button
       type="button"

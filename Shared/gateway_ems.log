@@ -47,3 +47,51 @@
 2025-09-16 18:21:59,792 - login - INFO - Usuario autenticado exitosamente: admin
 2025-09-16 18:22:54,145 - connection - WARNING - No hay conexión activa para cerrar.
 2025-09-16 18:23:02,767 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 18:24:07,122 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 18:25:41,735 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 18:26:04,395 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 18:29:48,143 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 18:31:08,699 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 18:31:41,755 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 18:32:26,446 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 18:53:06,450 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 18:54:48,483 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 18:54:53,748 - service - WARNING - Usuario no encontrado: undefined
+2025-09-16 18:54:53,748 - login - WARNING - Intento de login fallido para usuario: undefined
+2025-09-16 18:55:14,271 - service - WARNING - Usuario no encontrado: undefined
+2025-09-16 18:55:14,271 - login - WARNING - Intento de login fallido para usuario: undefined
+2025-09-16 19:01:53,757 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 19:02:19,205 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 20:13:01,998 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 20:13:15,574 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 20:14:59,736 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 20:17:40,076 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 20:19:03,628 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 20:23:24,847 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 20:33:19,556 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 20:42:19,533 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 20:54:56,477 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 21:04:14,321 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 21:20:37,535 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 21:26:27,780 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 21:32:41,213 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 21:36:38,876 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 21:42:08,626 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 21:44:51,158 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 21:48:02,818 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 21:50:26,516 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 21:55:06,559 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 22:17:26,585 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 22:23:19,308 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 22:30:56,507 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 22:32:15,562 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 22:38:00,807 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 22:38:07,723 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 22:43:37,822 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 22:43:53,753 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 22:45:39,656 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 22:46:03,729 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 22:51:45,133 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 22:52:03,303 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-16 22:55:45,809 - connection - WARNING - No hay conexión activa para cerrar.
+2025-09-16 22:58:54,378 - connection - WARNING - No hay conexión activa para cerrar.

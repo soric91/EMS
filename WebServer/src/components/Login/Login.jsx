@@ -1,5 +1,5 @@
 
-import FormLogin from "../../features/auth/components/FormLogin.jsx"
+import FormLogin from "../auth/FormLogin.jsx"
 
 
 function Login() {

@@ -1,56 +1,45 @@
-import { useState, useEffect } from 'react';
 import Sidebar from '../Sidebar/Sidebar.jsx';
+import { useSidebar } from '../../hooks/useSidebar.js';
 
 /**
  * Contenedor que maneja la lógica del sidebar responsive
+ * Utiliza el hook useSidebar para manejar el estado
  */
-export default function SidebarContainer({ isOpen, onToggle }) {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-    
-    return () => window.removeEventListener('resize', checkScreenSize);
-  }, []);
+export default function SidebarContainer() {
+  const { 
+    isOpen, 
+    isMobile, 
+    toggleSidebar, 
+    shouldShowOverlay, 
+    sidebarClasses 
+  } = useSidebar();
 
   // En móvil, mostrar overlay cuando está abierto
   if (isMobile) {
     return (
       <>
         {/* Overlay para móvil */}
-        {isOpen && (
+        {shouldShowOverlay && (
           <div 
             className="fixed inset-0 z-20 bg-black/50 md:hidden"
-            onClick={onToggle}
+            onClick={toggleSidebar}
           />
         )}
         
-        {/* Sidebar móvil */}
-        <div className={`
-          fixed left-0 top-0 bottom-0 z-30 
-          transform transition-transform duration-300 ease-in-out
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-          md:hidden
-        `}>
-          <Sidebar collapsed={false} onClose={onToggle} />
+        {/* Sidebar para móvil */}
+        <div className={sidebarClasses}>
+          <Sidebar onItemClick={toggleSidebar} />
         </div>
       </>
     );
   }
 
-  // En desktop, comportamiento normal
+  // En desktop, sidebar estático
   return (
-    <>
-      {isOpen && (
-        <div className="hidden md:block">
-          <Sidebar collapsed={false} onClose={onToggle} />
-        </div>
-      )}
-    </>
+    <div className={`transition-all duration-300 ${isOpen ? 'w-64' : 'w-0'} overflow-hidden`}>
+      <div className="w-64 h-screen">
+        <Sidebar />
+      </div>
+    </div>
   );
 }

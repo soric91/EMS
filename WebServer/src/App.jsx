@@ -5,7 +5,8 @@ import Homepage from './pages/Home';
 import { GlobalProvider } from './context/GlobalState.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import Settings from './pages/Settings.jsx';
-import ConfigDevices from './pages/ConfigDevices.jsx';
+import DeviceManagement from './pages/ConfigDevices.jsx';
+import DeviceConfig from './pages/DeviceConfig.jsx';
 import Devices from './pages/Devices.jsx';
 import Logs from './pages/Logs.jsx';
 import AppLayout from './components/Layout/AppLayout.jsx';
@@ -23,7 +24,8 @@ const App = () => {
           <Route path="/home" element={<AppLayout><Homepage /></AppLayout>} />
           <Route path="/dashboard" element={<AppLayout><Dashboard /></AppLayout>} />
           <Route path="/settings" element={<AppLayout><Settings /></AppLayout>} />
-          <Route path="/config-devices" element={<AppLayout><ConfigDevices /></AppLayout>} />
+          <Route path="/config-devices" element={<AppLayout><DeviceManagement /></AppLayout>} />
+          <Route path="/device-config/:deviceId" element={<AppLayout><DeviceConfig /></AppLayout>} />
           <Route path="/devices" element={<AppLayout><Devices /></AppLayout>} />
           <Route path="/logs" element={<AppLayout><Logs /></AppLayout>} />
 

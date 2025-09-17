@@ -1,26 +1,23 @@
 import { useNavigate } from 'react-router-dom';
-import { useGlobalState } from '../../context/GlobalState.jsx';
+import { useAuth } from './useAuth.js';
 
 /**
- * Hook personalizado para manejar la lógica de autenticación en el layout
+ * Hook personalizado para manejar la lógica del layout de la aplicación
  */
 export function useAppLayout() {
   const navigate = useNavigate();
-  const { user, logOutUser } = useGlobalState();
+  const { logout, userInfo, user } = useAuth();
 
-  const handleLogout = () => {
-    logOutUser();
-    navigate('/login');
+  const handleLogout = async () => {
+    const result = logout();
+    if (result.success) {
+      navigate('/login');
+    }
   };
-
-  const getUserInfo = () => ({
-    name: user?.username || user?.name || 'Admin',
-    email: user?.email || 'admin@example.com'
-  });
 
   return {
     user,
-    userInfo: getUserInfo(),
+    userInfo,
     handleLogout
   };
 }
