@@ -1,7 +1,7 @@
 // src/components/DeviceTable.jsx
 import DeviceTableRow from "./DeviceTableRow";
 
-export default function DeviceTable({ devices, onConfigDevice, onConnect, onDisconnect, onDelete }) {
+export default function DeviceTable({ devices, onConfigDevice, onConnect, onDisconnect, onDelete, onEdit }) {
   return (
     <div className="overflow-hidden rounded-xl bg-gray-900 shadow-lg">
       <table className="w-full text-left text-gray-300">
@@ -26,6 +26,7 @@ export default function DeviceTable({ devices, onConfigDevice, onConnect, onDisc
               onConnect={onConnect}
               onDisconnect={onDisconnect}
               onDelete={onDelete}
+              onEdit={onEdit}
             />
           ))}
         </tbody>

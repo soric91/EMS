@@ -1,4 +1,3 @@
-// src/components/Devices/DeviceInfoGrid.jsx
 
 export default function DeviceInfoGrid({ device }) {
   return (
@@ -24,19 +23,59 @@ export default function DeviceInfoGrid({ device }) {
         </div>
         
         <div className="bg-gray-800 p-4 rounded-lg">
+          <label className="block text-sm text-gray-400 mb-1 font-medium">Protocol</label>
+          <p className="text-white">{device.protocol}</p>
+        </div>
+
+        <div className="bg-gray-800 p-4 rounded-lg">
           <label className="block text-sm text-gray-400 mb-1 font-medium">Modbus ID</label>
           <p className="text-white">{device.modbusId}</p>
         </div>
 
-        <div className="bg-gray-800 p-4 rounded-lg">
-          <label className="block text-sm text-gray-400 mb-1 font-medium">IP Address</label>
-          <p className="text-white">{device.ipAddress || device.ip}</p>
-        </div>
+        {/* TCP Protocol Fields */}
+        {device.protocol === 'TCP' && (
+          <>
+            <div className="bg-gray-800 p-4 rounded-lg">
+              <label className="block text-sm text-gray-400 mb-1 font-medium">IP Address</label>
+              <p className="text-white">{device.ipAddress || device.ip}</p>
+            </div>
 
-        <div className="bg-gray-800 p-4 rounded-lg">
-          <label className="block text-sm text-gray-400 mb-1 font-medium">Port</label>
-          <p className="text-white">{device.port}</p>
-        </div>
+            <div className="bg-gray-800 p-4 rounded-lg">
+              <label className="block text-sm text-gray-400 mb-1 font-medium">Port</label>
+              <p className="text-white">{device.port}</p>
+            </div>
+          </>
+        )}
+
+        {/* RTU Protocol Fields */}
+        {device.protocol === 'RTU' && (
+          <>
+            <div className="bg-gray-800 p-4 rounded-lg">
+              <label className="block text-sm text-gray-400 mb-1 font-medium">Serial Port</label>
+              <p className="text-white">{device.serialPort}</p>
+            </div>
+
+            <div className="bg-gray-800 p-4 rounded-lg">
+              <label className="block text-sm text-gray-400 mb-1 font-medium">Baud Rate</label>
+              <p className="text-white">{device.baudRate}</p>
+            </div>
+
+            <div className="bg-gray-800 p-4 rounded-lg">
+              <label className="block text-sm text-gray-400 mb-1 font-medium">Data Bits</label>
+              <p className="text-white">{device.dataBits}</p>
+            </div>
+
+            <div className="bg-gray-800 p-4 rounded-lg">
+              <label className="block text-sm text-gray-400 mb-1 font-medium">Parity</label>
+              <p className="text-white">{device.parity}</p>
+            </div>
+
+            <div className="bg-gray-800 p-4 rounded-lg">
+              <label className="block text-sm text-gray-400 mb-1 font-medium">Stop Bits</label>
+              <p className="text-white">{device.stopBits}</p>
+            </div>
+          </>
+        )}
 
         <div className="bg-gray-800 p-4 rounded-lg">
           <label className="block text-sm text-gray-400 mb-1 font-medium">Start Address</label>

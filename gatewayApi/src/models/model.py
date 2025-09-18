@@ -74,3 +74,28 @@ class KeysNames(str, Enum):
     
     def __str__(self) -> str:
         return str(self.value)
+
+
+# Modelo para dispositivo EMS
+class Device(BaseModel):
+    """Modelo para datos de dispositivo EMS"""
+    id: int = Field(..., description="ID único del dispositivo")
+    deviceName: str = Field(..., min_length=1, description="Nombre del dispositivo")
+    deviceType: str = Field(..., description="Tipo de dispositivo (ej: CT Meter)")
+    protocol: str = Field(..., description="Protocolo de comunicación (ej: RTU)")
+    ipAddress: Optional[str] = Field(default="", description="Dirección IP del dispositivo")
+    port: Optional[int] = Field(default="", description="Puerto del dispositivo")
+    serialPort: Optional[str] = Field(default="", description="Puerto serie (ej: /dev/ttyRS485)")
+    baudRate: Optional[int] = Field(default=9600, description="Velocidad de baudios")
+    parity: Optional[str] = Field(default="N", description="Paridad (None, Even, Odd)")
+    dataBits: Optional[int] = Field(default=8, description="Bits de datos")
+    stopBits: Optional[int] = Field(default=1, description="Bits de parada")
+    modbusId: int = Field(..., description="ID Modbus del dispositivo")
+    startAddress: int = Field(..., description="Dirección inicial de registros")
+    registers: int = Field(..., description="Número de registros a leer")
+
+
+class DeviceResponse(BaseModel):
+    """Respuesta para operaciones con dispositivos"""
+    deviceName: str = Field(..., description="Nombre del dispositivo")
+    success: bool = Field(default=True, description="Indica si la operación fue exitosa")

@@ -5,6 +5,7 @@ import StatsCard from "../components/Devices/StatsCard.jsx";
 import AddDeviceModal from "../components/Devices/AddDeviceModal.jsx";
 import ConfirmDeleteModal from "../components/Devices/ConfirmDeleteModal.jsx";
 import { emsDataManager } from "../utils/EMSDataManager.js";
+import { addConfigParamsModbus } from "../api/apiModbus.js";
 
 export default function DeviceManagement() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export default function DeviceManagement() {
   const [deviceToDelete, setDeviceToDelete] = useState(null);
   const [editDevice, setEditDevice] = useState(null); // Nuevo estado para edición
   const [devices, setDevices] = useState([]);
+  const [isSyncing, setIsSyncing] = useState(false); // Estado para sincronización
   const [stats, setStats] = useState({
     totalDevices: 0,
     connectedDevices: 0,
@@ -244,6 +246,12 @@ export default function DeviceManagement() {
     setEditDevice(null); // Limpiar dispositivo en edición al cerrar
   };
 
+  const handleEditDevice = (device) => {
+    console.log('Editando dispositivo:', device); // Debug
+    setEditDevice(device); // Establecer el dispositivo a editar
+    setIsModalOpen(true); // Abrir el modal
+  };
+
   const handleConnectDevice = (deviceId) => {
     // Lógica para conectar dispositivo
     const device = emsDataManager.getDeviceById(deviceId);
@@ -283,16 +291,113 @@ export default function DeviceManagement() {
     }
   };
 
+  const handleSyncDevices = async () => {
+    setIsSyncing(true);
+    
+    try {
+      // Obtener el token JWT del localStorage
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Token de autenticación no encontrado. Por favor, inicie sesión nuevamente.');
+        return;
+      }
+
+      // Obtener todos los dispositivos Modbus del localStorage
+      const localDevices = emsDataManager.getDevices();
+      
+      console.log('Dispositivos en localStorage:', localDevices);
+      
+      if (localDevices.length === 0) {
+        alert('No hay dispositivos en el localStorage para sincronizar.');
+        return;
+      }
+
+      let syncSuccessCount = 0;
+      let syncErrorCount = 0;
+      const errors = [];
+
+      // Sincronizar cada dispositivo
+      for (const device of localDevices) {
+        try {
+          console.log('Sincronizando dispositivo:', device);
+          
+          // Preparar los parámetros exactos como se especifica en el payload
+          const devicePayload = {
+            id: device.id,
+            name: device.name,
+            type: device.type,
+            protocol: device.protocol,
+            ip: device.ip || "",
+            port: device.port || "",
+            serialPort: device.serialPort || "",
+            baudRate: parseInt(device.baudRate),
+            parity: device.parity,
+            dataBits: parseInt(device.dataBits),
+            stopBits: parseInt(device.stopBits),
+            modbusId: parseInt(device.modbusId),
+            startAddress: parseInt(device.startAddress),
+            registers: parseInt(device.registers)
+          };
+
+          console.log('Payload enviado:', devicePayload);
+
+          // Llamar al API para agregar la configuración
+          await addConfigParamsModbus(devicePayload, token);
+          syncSuccessCount++;
+          
+        } catch (error) {
+          console.error(`Error sincronizando dispositivo ${device.name}:`, error);
+          syncErrorCount++;
+          errors.push(`${device.name}: ${error.response?.data?.detail || error.message}`);
+        }
+      }
+
+      // Mostrar resultado de la sincronización
+      if (syncSuccessCount > 0) {
+        const message = `Sincronización completada:\n✓ ${syncSuccessCount} dispositivos sincronizados correctamente${syncErrorCount > 0 ? `\n✗ ${syncErrorCount} dispositivos con errores` : ''}`;
+        alert(message);
+        
+        if (errors.length > 0) {
+          console.error('Errores de sincronización:', errors);
+        }
+      } else {
+        alert('No se pudo sincronizar ningún dispositivo:\n' + errors.join('\n'));
+      }
+
+    } catch (error) {
+      console.error('Error general en la sincronización:', error);
+      alert('Error inesperado durante la sincronización: ' + error.message);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
   return (
     <div className="p-6 space-y-6 text-white bg-gray-950 min-h-screen">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold">Device Management</h1>
-        <button 
-          onClick={handleOpenModal}
-          className="px-4 py-2 bg-emerald-600 rounded-lg hover:bg-emerald-500 transition-colors"
-        >
-          + Add Device
-        </button>
+        <div className="flex gap-3">
+          <button 
+            onClick={handleSyncDevices}
+            disabled={isSyncing}
+            className="px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            {isSyncing ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Sincronizando...
+              </>
+            ) : (
+              '🔄 Sincronizar Device'
+            )}
+          </button>
+          <button 
+            onClick={handleOpenModal}
+            className="px-4 py-2 bg-emerald-600 rounded-lg hover:bg-emerald-500 transition-colors"
+          >
+            + Add Device
+          </button>
+        </div>
       </div>
 
       <DeviceTable 
@@ -301,6 +406,7 @@ export default function DeviceManagement() {
         onConnect={handleConnectDevice}
         onDisconnect={handleDisconnectDevice}
         onDelete={handleDeleteDevice}
+        onEdit={handleEditDevice}
       />
 
       <div className="grid grid-cols-3 gap-4">

@@ -22,7 +22,7 @@ export function useLoginForm() {
     watch
   } = useForm({
     defaultValues: {
-      usuario: '',
+      username: '',
       password: ''
     }
   });

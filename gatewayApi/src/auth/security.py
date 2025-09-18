@@ -76,10 +76,14 @@ def verify_token(token: str, token_type: str = "access") -> Optional[Dict[str, A
         if exp is None:
             return None
             
-        if datetime.utcnow() > datetime.fromtimestamp(exp):
-            logger.warning("Token expirado")
+        # Usar UTC para ambas comparaciones
+        current_time = datetime.utcnow()
+        expiration_time = datetime.utcfromtimestamp(exp)
+        
+        if current_time > expiration_time:
+            logger.warning(f"Token expirado. Actual: {current_time}, Expiración: {expiration_time}")
             return None
-            
+        
         return payload
         
     except JWTError as e:

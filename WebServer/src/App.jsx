@@ -10,6 +10,7 @@ import DeviceConfig from './pages/DeviceConfig.jsx';
 import Devices from './pages/Devices.jsx';
 import Logs from './pages/Logs.jsx';
 import AppLayout from './components/Layout/AppLayout.jsx';
+import EditDeviceModbus from './pages/EditDeviceModbus.jsx';
 
 
 const App = () => {
@@ -27,6 +28,7 @@ const App = () => {
           <Route path="/config-devices" element={<AppLayout><DeviceManagement /></AppLayout>} />
           <Route path="/device-config/:deviceId" element={<AppLayout><DeviceConfig /></AppLayout>} />
           <Route path="/devices" element={<AppLayout><Devices /></AppLayout>} />
+          <Route path="/edit-device-modbus/:id" element={<AppLayout><EditDeviceModbus /></AppLayout>} />
           <Route path="/logs" element={<AppLayout><Logs /></AppLayout>} />
 
           <Route path="*" element={<h1 className="text-center text-3xl min-h-screen flex justify-center items-center">404 - Página no encontrada</h1>} />

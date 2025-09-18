@@ -85,6 +85,33 @@ async def get_current_user(
     
     return user
 
+async def verify_token_only(
+    token: Annotated[str, Depends(oauth2_scheme)]
+) -> None:
+    """
+    Verifica únicamente que el token sea válido sin extraer datos del usuario
+    """
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="No se pudieron validar las credenciales",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    
+    try:
+        # Verificar el token
+        payload = verify_token(token, "access")
+        if payload is None:
+            raise credentials_exception
+            
+        # Solo verificar que el token sea válido, no extraer datos del usuario
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+            
+    except Exception as e:
+        logger.error(f"Error validando token: {e}")
+        raise credentials_exception
+
 async def get_current_active_user(
     current_user: Annotated[User, Depends(get_current_user)]
 ) -> User:

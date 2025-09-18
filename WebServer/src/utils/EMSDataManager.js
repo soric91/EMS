@@ -88,15 +88,14 @@ class EMSDataManager {
    */
   updateDevice(deviceId, updates) {
     try {
-      console.log('EMSDataManager.updateDevice llamado con:', { deviceId, updates });
+  
       const devices = this.getDevices();
-      console.log('Dispositivos existentes:', devices);
+     
       // Convertir deviceId a número para comparación correcta
       const numericDeviceId = parseInt(deviceId);
-      console.log('deviceId convertido a número:', numericDeviceId);
+   
       const deviceIndex = devices.findIndex(d => d.id === numericDeviceId);
-      console.log('Índice del dispositivo encontrado:', deviceIndex);
-      
+     
       if (deviceIndex === -1) {
         console.error('Dispositivo no encontrado con ID:', numericDeviceId);
         return null;
@@ -108,9 +107,9 @@ class EMSDataManager {
         updatedAt: new Date().toISOString()
       };
       
-      console.log('Dispositivo actualizado:', devices[deviceIndex]);
+    
       this.saveDevices(devices);
-      console.log('Dispositivos guardados en localStorage');
+  
       return devices[deviceIndex];
     } catch (error) {
       console.error('Error updating device:', error);

@@ -75,6 +75,12 @@ export default function AddDeviceModal({ isOpen, onClose, onSave, editDevice = n
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
+    // Debug para protocolo
+    if (name === 'protocol') {
+      console.log('Protocol changed from', formData.protocol, 'to', value);
+    }
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -349,6 +355,11 @@ export default function AddDeviceModal({ isOpen, onClose, onSave, editDevice = n
           {/* Configuración de Conexión */}
           <div className="space-y-4">
             <h3 className="text-lg font-medium text-white">Configuración de Conexión</h3>
+            
+            {/* Debug info - remover después */}
+            <div className="text-xs text-yellow-400 p-2 bg-yellow-900/20 rounded">
+              Debug: Protocol = "{formData.protocol}" | Type: {typeof formData.protocol}
+            </div>
             
             {formData.protocol === 'TCP' ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

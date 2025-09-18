@@ -23,8 +23,7 @@ async def init_admin():
     created_user = await create_user(user_data)
     if created_user:
         logger.info(f"Usuario admin creado exitosamente: {created_user.username}")
-
-    await close_connection()
+        
 if __name__ == "__main__":
     asyncio.run(init_admin())
     sys.exit(0) 

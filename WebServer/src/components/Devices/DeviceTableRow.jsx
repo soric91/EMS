@@ -1,8 +1,8 @@
 // src/components/DeviceTableRow.jsx
 import StatusBadge from "./StatusBadge";
-import { Settings, Play, Pause, Trash2 } from "lucide-react";
+import { Settings, Play, Pause, Trash2, Edit } from "lucide-react";
 
-export default function DeviceTableRow({ device, onConfig, onConnect, onDisconnect, onDelete }) {
+export default function DeviceTableRow({ device, onConfig, onConnect, onDisconnect, onDelete, onEdit }) {
   // Mostrar IP:Puerto para TCP o Puerto Serial para RTU
   const getConnectionInfo = (device) => {
     if (device.protocol === 'RTU' && device.serialPort) {
@@ -32,6 +32,14 @@ export default function DeviceTableRow({ device, onConfig, onConnect, onDisconne
             title="Configurar dispositivo"
           >
             <Settings className="w-4 h-4" />
+          </button>
+          
+          <button
+            onClick={() => onEdit(device)}
+            className="p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-900/20 rounded-lg transition-colors"
+            title="Editar dispositivo"
+          >
+            <Edit className="w-4 h-4" />
           </button>
           
           <button

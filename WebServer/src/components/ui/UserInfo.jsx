@@ -1,5 +1,5 @@
 import { User, LogOut } from 'lucide-react';
-import { capitalizar } from '../../util/utils.js';
+import { capitalizar } from '../../utils/utils.js';
 
 /**
  * Componente que muestra la información del usuario y el botón de logout
