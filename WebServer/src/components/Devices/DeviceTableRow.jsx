@@ -5,20 +5,19 @@ import { Settings, Play, Pause, Trash2, Edit } from "lucide-react";
 export default function DeviceTableRow({ device, onConfig, onConnect, onDisconnect, onDelete, onEdit }) {
   // Mostrar IP:Puerto para TCP o Puerto Serial para RTU
   const getConnectionInfo = (device) => {
-    if (device.protocol === 'RTU' && device.serialPort) {
+    if (device.protocol === 'TCP' && device.ipAddress) {
+      return `${device.ipAddress}:${device.port || 502}`;
+    } else if (device.serialPort) {
       return device.serialPort;
-    } else if (device.ip) {
-      return `${device.ip}:${device.port || 502}`;
     }
-    return `${device.ip}:${device.port || 502}`; // Fallback para dispositivos existentes
   };
 
   const isConnected = device.status === 'Connected';
 
   return (
     <tr className="border-b border-gray-700">
-      <td className="px-4 py-3">{device.name}</td>
-      <td className="px-4 py-3">{device.type}</td>
+      <td className="px-4 py-3">{device.deviceName}</td>
+      <td className="px-4 py-3">{device.deviceType}</td>
       <td className="px-4 py-3"><StatusBadge status={device.status} /></td>
       <td className="px-4 py-3">{device.modbusId}</td>
       <td className="px-4 py-3">{getConnectionInfo(device)}</td>

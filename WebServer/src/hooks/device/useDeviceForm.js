@@ -1,10 +1,13 @@
 import { useForm } from "react-hook-form";
 import { useState, useEffect} from "react";
 import { v4 as uuidv4 } from "uuid";
+import { useGlobalDevice } from "../../context/GlobalDevice";
 
 export default function useDeviceForm(onClose) {
   const { register, handleSubmit, reset , resetField } = useForm();
   const [protocol, setProtocol] = useState("TCP");
+  const {addDevice } = useGlobalDevice();
+
 
 
    useEffect(() => {
@@ -20,13 +23,14 @@ export default function useDeviceForm(onClose) {
     }
   }, [protocol, resetField]);
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const deviceconfigparms = {
         id: uuidv4(),
         ...data,
         protocol
     }
-    console.log("Datos guardados:", { ...deviceconfigparms, protocol });
+    const result = await addDevice(deviceconfigparms);
+    console.log("Datos guardados:", result);
     if (onClose) onClose();  // cerrar modal
     reset();                 // limpiar form
   };

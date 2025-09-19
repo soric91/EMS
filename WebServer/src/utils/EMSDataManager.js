@@ -2,6 +2,8 @@
  * Gestor de datos local usando localStorage
  * Maneja dispositivos y registros Modbus para el EMS
  */
+import {v4 as uuidv4} from 'uuid';
+
 class EMSDataManager {
   constructor() {
     this.STORAGE_KEYS = {
@@ -64,7 +66,7 @@ class EMSDataManager {
     try {
       const devices = this.getDevices();
       const newDevice = {
-        id: Date.now(), // ID único basado en timestamp
+        id: uuidv4(), // ID único como UUID string
         ...device,
         status: 'Disconnected',
         lastRead: 'Never',
@@ -82,22 +84,18 @@ class EMSDataManager {
 
   /**
    * Actualiza un dispositivo existente
-   * @param {number} deviceId - ID del dispositivo
+   * @param {string} deviceId - ID del dispositivo (UUID)
    * @param {Object} updates - Datos a actualizar
    * @returns {Object|null} Dispositivo actualizado o null si no existe
    */
   updateDevice(deviceId, updates) {
     try {
-  
       const devices = this.getDevices();
-     
-      // Convertir deviceId a número para comparación correcta
-      const numericDeviceId = parseInt(deviceId);
-   
-      const deviceIndex = devices.findIndex(d => d.id === numericDeviceId);
+      // Los dispositivos ahora usan UUID, no convertir a número
+      const deviceIndex = devices.findIndex(d => d.id === deviceId);
      
       if (deviceIndex === -1) {
-        console.error('Dispositivo no encontrado con ID:', numericDeviceId);
+        console.error('Dispositivo no encontrado con ID:', deviceId);
         return null;
       }
       
@@ -119,7 +117,7 @@ class EMSDataManager {
 
   /**
    * Elimina un dispositivo
-   * @param {number} deviceId - ID del dispositivo
+   * @param {string} deviceId - ID del dispositivo
    * @returns {boolean} true si se eliminó correctamente
    */
   deleteDevice(deviceId) {
@@ -140,13 +138,14 @@ class EMSDataManager {
 
   /**
    * Obtiene un dispositivo por ID
-   * @param {number} deviceId - ID del dispositivo
+   * @param {string} deviceId - ID del dispositivo (UUID)
    * @returns {Object|null} Dispositivo o null si no existe
    */
   getDeviceById(deviceId) {
     try {
       const devices = this.getDevices();
-      return devices.find(d => d.id === parseInt(deviceId)) || null;
+      // Los dispositivos ahora usan UUID, no convertir a número
+      return devices.find(d => d.id === deviceId) || null;
     } catch (error) {
       console.error('Error getting device by ID:', error);
       return null;
@@ -173,13 +172,14 @@ class EMSDataManager {
 
   /**
    * Obtiene registros por dispositivo
-   * @param {number} deviceId - ID del dispositivo
+   * @param {string} deviceId - ID del dispositivo (UUID)
    * @returns {Array} Lista de registros del dispositivo
    */
   getRegistersByDevice(deviceId) {
     try {
       const registers = this.getRegisters();
-      return registers.filter(r => r.deviceId === parseInt(deviceId));
+      // Los dispositivos ahora usan UUID, no convertir a número
+      return registers.filter(r => r.deviceId === deviceId);
     } catch (error) {
       console.error('Error getting registers by device:', error);
       return [];
@@ -200,29 +200,27 @@ class EMSDataManager {
 
   /**
    * Agrega un nuevo registro
-   * @param {number} deviceId - ID del dispositivo
    * @param {Object} register - Datos del registro
    * @returns {Object} Registro agregado con ID
    */
-  addRegister(deviceId, register) {
+  addRegister(register) {
     try {
       const registers = this.getRegisters();
       const newRegister = {
-        id: Date.now(), // ID único
-        deviceId: parseInt(deviceId),
+        id: uuidv4(), // ID único como UUID string
+        deviceId: register.deviceId, // deviceId ahora también es UUID string
         ...register,
         status: 'success',
-        lastValue: '0',
-        lastUpdate: 'Never',
         createdAt: new Date().toISOString()
       };
       
       registers.push(newRegister);
       this.saveRegisters(registers);
       
-      // Actualizar contador de registros del dispositivo
-      this.updateDeviceRegisterCount(deviceId);
-      
+      // Comentado: Actualizar contador de registros del dispositivo
+      // ¿Es realmente necesario mantener un contador en el dispositivo?
+      // this.updateDeviceRegisterCount(register.deviceId);
+
       return newRegister;
     } catch (error) {
       console.error('Error adding register:', error);
@@ -232,7 +230,7 @@ class EMSDataManager {
 
   /**
    * Actualiza un registro existente
-   * @param {number} registerId - ID del registro
+   * @param {string} registerId - ID del registro (UUID)
    * @param {Object} updates - Datos a actualizar
    * @returns {Object|null} Registro actualizado o null si no existe
    */
@@ -241,14 +239,12 @@ class EMSDataManager {
       console.log('EMSDataManager.updateRegister llamado con:', { registerId, updates });
       const registers = this.getRegisters();
       console.log('Registros existentes:', registers);
-      // Convertir registerId a número para comparación correcta
-      const numericRegisterId = parseInt(registerId);
-      console.log('registerId convertido a número:', numericRegisterId);
-      const registerIndex = registers.findIndex(r => r.id === numericRegisterId);
+      // Los registros usan UUID, no convertir a número
+      const registerIndex = registers.findIndex(r => r.id === registerId);
       console.log('Índice del registro encontrado:', registerIndex);
       
       if (registerIndex === -1) {
-        console.error('Registro no encontrado con ID:', numericRegisterId);
+        console.error('Registro no encontrado con ID:', registerId);
         return null;
       }
       
@@ -270,20 +266,21 @@ class EMSDataManager {
 
   /**
    * Elimina un registro
-   * @param {number} registerId - ID del registro
+   * @param {string} registerId - ID del registro (UUID)
    * @returns {boolean} true si se eliminó correctamente
    */
   deleteRegister(registerId) {
     try {
       const registers = this.getRegisters();
+      // Los registros usan UUID, no convertir a número
       const register = registers.find(r => r.id === registerId);
       if (!register) return false;
       
       const filteredRegisters = registers.filter(r => r.id !== registerId);
       this.saveRegisters(filteredRegisters);
       
-      // Actualizar contador de registros del dispositivo
-      this.updateDeviceRegisterCount(register.deviceId);
+      // Actualizar contador de registros del dispositivo (opcional)
+      // this.updateDeviceRegisterCount(register.deviceId);
       
       return true;
     } catch (error) {
@@ -294,12 +291,13 @@ class EMSDataManager {
 
   /**
    * Elimina todos los registros de un dispositivo
-   * @param {number} deviceId - ID del dispositivo
+   * @param {string} deviceId - ID del dispositivo (UUID)
    */
   deleteRegistersByDevice(deviceId) {
     try {
       const registers = this.getRegisters();
-      const filteredRegisters = registers.filter(r => r.deviceId !== parseInt(deviceId));
+      // Los dispositivos ahora usan UUID, no convertir a número
+      const filteredRegisters = registers.filter(r => r.deviceId !== deviceId);
       this.saveRegisters(filteredRegisters);
     } catch (error) {
       console.error('Error deleting registers by device:', error);
@@ -308,12 +306,13 @@ class EMSDataManager {
 
   /**
    * Actualiza el contador de registros activos de un dispositivo
-   * @param {number} deviceId - ID del dispositivo
+   * @param {string} deviceId - ID del dispositivo (UUID)
    */
   updateDeviceRegisterCount(deviceId) {
     try {
       const registers = this.getRegistersByDevice(deviceId);
-      this.updateDevice(parseInt(deviceId), { 
+      // deviceId ahora es UUID, no convertir a número
+      this.updateDevice(deviceId, { 
         registers: registers.length,
         activeRegisters: registers.length
       });

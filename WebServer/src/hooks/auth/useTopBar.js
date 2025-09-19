@@ -1,5 +1,5 @@
 import { useAuth } from './useAuth.js';
-import { useSidebar } from './useSidebar.js';
+import { useSidebar } from '../useSidebar.js';
 
 /**
  * Hook personalizado para manejar la lógica del TopBar

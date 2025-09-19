@@ -1,4 +1,4 @@
-import useDeviceForm from "../../hooks/useDeviceForm";
+import useDeviceForm from "../../hooks/device/useDeviceForm";
 
 export default function AddDeviceModal({ isOpen, onClose }) {
   const {

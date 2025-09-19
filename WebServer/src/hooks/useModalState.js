@@ -1,4 +1,3 @@
-// src/hooks/useModalState.js
 import { useState } from 'react';
 
 export function useModalState() {

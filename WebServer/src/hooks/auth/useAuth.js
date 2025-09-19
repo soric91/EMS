@@ -1,4 +1,4 @@
-import { useGlobalState } from '../context/GlobalState.jsx';
+import { useGlobalState } from '../../context/GlobalState.jsx';
 
 /**
  * Hook personalizado para manejar la autenticación del usuario
@@ -32,6 +32,7 @@ export function useAuth() {
     
     return {
       id: user.id,
+      is_admin: user.is_admin || false,
       name: user.username || user.name || 'Usuario',
       email: user.email || 'sin-email@example.com',
       username: user.username,

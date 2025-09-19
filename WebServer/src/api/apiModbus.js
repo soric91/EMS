@@ -3,7 +3,6 @@ import axios from "./axios";
 
 export const addConfigParamsModbus = async ( params, token) => {
     try {
-        console.log("Adding Modbus config params:", params); // Debug
         const response = await axios.post(`/add/device/modbus`, params, {
             headers: {
                 'Content-Type': 'application/json',

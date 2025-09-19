@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer } from "react";
-import  {AppReducer}  from "./AppReducer";
+import { AppReducer } from "./AppReducer";
 import { apiLoginUser } from "../api/apiUser";
 
 
@@ -32,7 +32,7 @@ export const GlobalProvider = ({ children }) => {
 		try {
 			const localToken = localStorage.getItem("token");
 			const localUser = localStorage.getItem("user");
-			
+
 			return {
 				...initialState,
 				token: localToken || null,
@@ -52,40 +52,40 @@ export const GlobalProvider = ({ children }) => {
 
 	const loginUser = async ({ username, password }) => {
 
-	dispatch({ type: "LOGIN_START" });
-	try {
-	
-		const res = await apiLoginUser({ username: username,  password: password });
-		const data = await res.data;
-	
-		if (res.status === 200 && data.access_token) {
-			// Guardar tanto el token como el usuario en localStorage
-			localStorage.setItem("token", data.access_token);
-			if (data.user) {
-				localStorage.setItem("user", JSON.stringify(data.user));
+		dispatch({ type: "LOGIN_START" });
+		try {
+
+			const res = await apiLoginUser({ username: username, password: password });
+			const data = await res.data;
+
+			if (res.status === 200 && data.access_token) {
+				// Guardar tanto el token como el usuario en localStorage
+				localStorage.setItem("token", data.access_token);
+				if (data.user) {
+					localStorage.setItem("user", JSON.stringify(data.user));
+				}
+				dispatch({ type: "LOGIN_SUCCESS", payload: { user: data.user, token: data.access_token } });
+				return { success: true, user: data.user };
+			} else {
+				dispatch({ type: "LOGIN_ERROR", payload: data.detail || "Credenciales incorrectas" });
+				return { success: false, error: data.detail || "Credenciales incorrectas" };
 			}
-			dispatch({ type: "LOGIN_SUCCESS", payload: { user: data.user, token: data.access_token } });
-			return { success: true, user: data.user };
-		} else {
-			dispatch({ type: "LOGIN_ERROR", payload: data.detail || "Credenciales incorrectas" });
-			return { success: false, error: data.detail || "Credenciales incorrectas" };
+		} catch (error) {
+			const errorMessage = error.response?.data?.detail || "Error en el login";
+			dispatch({ type: "LOGIN_ERROR", payload: errorMessage });
+			return { success: false, error: errorMessage };
+		} finally {
+			dispatch({ type: "LOGIN_END" });
 		}
-	} catch (error) {
-		const errorMessage = error.response?.data?.detail || "Error en el login";
-		dispatch({ type: "LOGIN_ERROR", payload: errorMessage });
-		return { success: false, error: errorMessage };
-	} finally {
-		dispatch({ type: "LOGIN_END" });
+	};
+
+	const logOutUser = () => {
+		localStorage.removeItem("token");
+		localStorage.removeItem("user");
+		dispatch({ type: "LOGOUT" });
 	}
-};
 
-const logOutUser = () => {
-	localStorage.removeItem("token");
-	localStorage.removeItem("user");
-	dispatch({ type: "LOGOUT" });
-}
-
-const isAuthenticated = !!(state.user && state.token);
+	const isAuthenticated = !!(state.user && state.token);
 
 	return (
 		<Context.Provider value={{ user: state.user, loginUser, logOutUser, error: state.error, isLoading: state.isLoading, isAuthenticated }}>

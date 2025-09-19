@@ -1,6 +1,6 @@
 import MenuToggle from './MenuToggle.jsx';
 import UserInfo from './UserInfo.jsx';
-import { useTopBar } from '../../hooks/useTopBar.js';
+import { useTopBar } from '../../hooks/auth/useTopBar.js';
 
 /**
  * Barra superior de la aplicación

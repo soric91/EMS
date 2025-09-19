@@ -1,7 +1,7 @@
 import ButtonSubmit from "../ui/Button/ButtonSubmit.jsx";
 import InputPassLogin from "../ui/Input/InputPassLogin.jsx";
 import InputUserLogin from "../ui/Input/InputUserLogin.jsx";
-import { useLoginForm } from "../../hooks/useLoginForm.js";
+import { useLoginForm } from "../../hooks/auth/useLoginForm.js";
 
 /**
  * Componente de formulario de login

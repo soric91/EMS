@@ -28,12 +28,12 @@ export function useDeviceRegisters(deviceId, device) {
 
       if (editRegister) {
         // Estamos editando un registro existente
-        console.log('Actualizando registro ID:', editRegister.id, 'con datos:', registerData);
+        
         const updatedRegister = emsDataManager.updateRegister(editRegister.id, registerData);
-        console.log('Resultado del update registro:', updatedRegister);
+       
         
         if (updatedRegister) {
-          console.log('Registro actualizado exitosamente');
+          
           setRegisters(prev => prev.map(reg => 
             reg.id === editRegister.id ? updatedRegister : reg
           ));

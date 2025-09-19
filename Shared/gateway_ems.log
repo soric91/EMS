@@ -25,3 +25,20 @@
 2025-09-17 19:30:22,233 - service - WARNING - Contraseña incorrecta para usuario: admin
 2025-09-17 19:30:22,233 - login - WARNING - Intento de login fallido para usuario: admin
 2025-09-17 19:30:28,975 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-18 13:47:32,892 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-18 13:53:51,677 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-18 13:55:23,333 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-18 14:14:09,413 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-18 14:37:38,063 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-18 15:09:56,134 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-18 15:11:30,734 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-18 15:11:37,566 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-18 15:37:09,221 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-18 15:37:20,067 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-18 15:53:09,295 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-18 16:17:17,910 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-18 19:35:54,281 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-18 23:13:02,158 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-18 23:45:35,165 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-18 23:47:06,287 - login - INFO - Usuario autenticado exitosamente: admin
+2025-09-18 23:52:47,038 - login - INFO - Usuario autenticado exitosamente: admin
