@@ -25,13 +25,12 @@ export const useTopBar = () => {
 
     // Obtener información del usuario para mostrar
     const userDisplayName = user?.username || user?.email || 'Usuario';
-    const userAvatar = user?.avatar || null;
+
 
     return {
         // Datos del usuario
         user,
         userDisplayName,
-        userAvatar,
         
         // Funciones de acción
         handleMenuToggle,

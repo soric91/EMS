@@ -48,7 +48,7 @@ services:
   
 
   database_ems:
-    image: mongo:4.2
+    image: mongo:4.2.18
     container_name: db_ems
     env_file:
       - .env

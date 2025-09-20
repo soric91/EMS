@@ -1,13 +1,14 @@
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
-import { Edit2, Trash2, Plus, Wifi, WifiOff } from 'lucide-react';
+// import { Edit2, Trash2, Plus, Wifi, WifiOff } from 'lucide-react';
 import ModbusRegisterForm from '../components/configregister/ModbusRegisterForm.jsx';
 import DeviceHeader from '../components/Devices/DeviceHeader.jsx';
 import { useGlobalDevice } from '../context/GlobalDevice.jsx';
 import { useNavigate } from 'react-router-dom';
-import DeviceInfoCard from '../components/Devices/DeviceInfoCard.jsx';
-import AddDeviceModal from '../components/Devices/AddDeviceModal.jsx';
+import DeviceInfoCard from '../components/configDevice/DeviceInfoCard.jsx';
+import AddDeviceModal from '../components/configDevice/AddDeviceModal.jsx';
 import TableRegister from '../components/configregister/TableRegister.jsx';
+import SectionRegister from '../components/configregister/SectionRegister.jsx';
 
 const EditModbusDevice = () => {
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ const EditModbusDevice = () => {
 
   const handleSaveDevice = async (deviceData) => {
     try {
-      console.log('Saving device data:', deviceData);
+  
       
       // Actualizar el dispositivo
       const success = await updateDevice(id, deviceData);
@@ -135,76 +136,18 @@ const EditModbusDevice = () => {
         />
 
         {/* Registers Section */}
-        <div className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-sm rounded-xl border border-gray-700/50 p-8 shadow-2xl">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-2xl font-bold text-white mb-2">Modbus Registers</h2>
-              <p className="text-gray-400 text-sm">Configure and manage device registers</p>
-            </div>
-            <button
-              onClick={handleAddRegister}
-              className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-blue-500/25 hover:scale-105 border border-blue-500/20"
-            >
-              <Plus className="w-5 h-5" />
-              <span className="font-medium">Add Register</span>
-            </button>
-          </div>
-
-          {/* Registers Table */}
-          {registers && registers.length > 0 ? (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between text-sm text-gray-400">
-                <span>{registers.length} register{registers.length !== 1 ? 's' : ''} configured</span>
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                    <span>Input</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                    <span>Holding</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-                    <span>Coil</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                    <span>Discrete</span>
-                  </div>
-                </div>
-              </div>
-              <TableRegister
-                registers={registers}
-                handleEditRegister={handleEditRegister}
-                handleDeleteRegister={handleDeleteRegister}
-              />
-            </div>
-          ) : (
-            <div className="text-center py-16">
-              <div className="mb-6">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-700/50 flex items-center justify-center">
-                  <Plus className="w-8 h-8 text-gray-400" />
-                </div>
-                <h3 className="text-lg font-medium text-white mb-2">No registers configured</h3>
-                <p className="text-gray-400 mb-6 max-w-md mx-auto">
-                  Start by adding your first Modbus register to begin monitoring device data.
-                </p>
-              </div>
-              <button
-                onClick={handleAddRegister}
-                className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-blue-500/25 hover:scale-105 border border-blue-500/20 font-medium"
-              >
-                Add First Register
-              </button>
-            </div>
-          )}
-        </div>
+        <SectionRegister
+          registers={device.registers}
+          handleAddRegister={handleAddRegister}
+          handleEditRegister={handleEditRegister}
+          handleDeleteRegister={handleDeleteRegister}
+          TableRegister={TableRegister}
+        />
       </div>
 
       {/* Register Form Modal */}
       {showRegisterForm && (
-        <ModbusRegisterForm
+        <ModbusRegisterForm idDevice={id} // Pass the device ID as a prop
           isEdit={editingRegister !== null}
           existingData={editingRegister}
           onSave={handleSaveRegister}

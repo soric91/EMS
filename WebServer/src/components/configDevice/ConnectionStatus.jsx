@@ -1,16 +1,8 @@
 // src/components/Devices/ConnectionStatus.jsx
 import { Wifi, WifiOff } from 'lucide-react';
 
-export default function ConnectionStatus({ connectionStatus, isConnecting }) {
-  if (isConnecting) {
-    return (
-      <div className="flex items-center space-x-2 bg-blue-900 text-blue-200 px-3 py-2 rounded-lg">
-        <div className="w-4 h-4 border-2 border-blue-200 border-t-transparent rounded-full animate-spin"></div>
-        <span className="text-sm font-medium">Connecting...</span>
-      </div>
-    );
-  }
-
+export default function ConnectionStatus({ connectionStatus }) {
+  
   const isConnected = connectionStatus === 'Connected';
 
   return (

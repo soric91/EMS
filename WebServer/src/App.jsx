@@ -5,8 +5,7 @@ import Homepage from './pages/Home';
 import { GlobalProvider } from './context/GlobalState.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import Settings from './pages/Settings.jsx';
-import DeviceManagement from './pages/ConfigDevices.jsx';
-import DeviceConfig from './pages/DeviceConfig.jsx';
+
 import Devices from './pages/Devices.jsx';
 import Logs from './pages/Logs.jsx';
 import AppLayout from './components/Layout/AppLayout.jsx';
@@ -39,19 +38,10 @@ const App = () => {
               <AppLayout><Settings /></AppLayout>
             </ProtectedRoute>
           } />
-          <Route path="/config-devices" element={
-            <ProtectedRoute>
-              <AppLayout><DeviceManagement /></AppLayout>
-            </ProtectedRoute>
-          } />
+
           <Route path="/edit-device-modbus/:id" element={
             <ProtectedRoute>
               <AppLayout><EditDeviceModbus /></AppLayout>
-            </ProtectedRoute>
-          } />
-          <Route path="/device-config/:deviceId" element={
-            <ProtectedRoute>
-              <AppLayout><DeviceConfig /></AppLayout>
             </ProtectedRoute>
           } />
           <Route path="/devices" element={
