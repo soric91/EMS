@@ -1,5 +1,5 @@
 import { useAuth } from './useAuth.js';
-import { useSidebar } from '../useSidebar.js';
+import { useSidebar } from '../../context/SidebarContext.jsx';
 
 /**
  * Hook personalizado para manejar la lógica del TopBar
@@ -10,7 +10,11 @@ export const useTopBar = () => {
     const { toggleSidebar } = useSidebar();
 
     // Función para manejar el toggle del menú
-    const handleMenuToggle = () => {
+    const handleMenuToggle = (e) => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
         toggleSidebar();
     };
 

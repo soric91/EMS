@@ -1,4 +1,5 @@
 import React from 'react'
+import { Plus } from 'lucide-react'
 
 function SectionRegister( {registers, handleAddRegister, handleEditRegister, handleDeleteRegister, TableRegister} ) {
   return (
@@ -18,7 +19,7 @@ function SectionRegister( {registers, handleAddRegister, handleEditRegister, han
           </div>
 
           {/* Registers Table */}
-          {registers && registers.length > 0 ? (
+          {registers && Array.isArray(registers) && registers.length > 0 ? (
             <div className="space-y-4">
               <div className="flex items-center justify-between text-sm text-gray-400">
                 <span>{registers.length} register{registers.length !== 1 ? 's' : ''} configured</span>

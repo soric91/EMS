@@ -2,18 +2,31 @@ import React from 'react'
 
 function TheadConfig() {
     return (
-        <><thead className="bg-gray-800 text-gray-400 uppercase text-xs">
+        <thead className="bg-zinc-800/50 border-b border-zinc-700/30">
             <tr>
-                <th className="px-4 py-3 text-left">Device Name</th>
-                <th className="px-4 py-3 text-left">Type</th>
-                <th className="px-4 py-3 text-left">Status</th>
-                <th className="px-4 py-3 text-left">Modbus ID</th>
-                <th className="px-4 py-3 text-left">IP Address/Port Serial</th>
-                <th className="px-4 py-3 text-left">Registers</th>
-                <th className="px-4 py-3 text-left">Last Read</th>
-                <th className="px-4 py-3 text-left">Actions</th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                    Dispositivo
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                    Tipo
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                    Estado
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                    Conexión
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                    Registros
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                    Última Lectura
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                    Acciones
+                </th>
             </tr>
-        </thead></>
+        </thead>
     )
 }
 

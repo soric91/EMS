@@ -75,7 +75,7 @@ function TableRegister({ registers, handleEditRegister, handleDeleteRegister }) 
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-700/50">
-          {registers.map((register, index) => (
+          {(registers || []).map((register, index) => (
             <tr 
               key={register.id} 
               className={`group hover:bg-gray-700/30 transition-all duration-200 ${

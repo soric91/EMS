@@ -1,3 +1,5 @@
+import React from 'react';
+import { createPortal } from 'react-dom';
 import { AlertTriangle, X } from 'lucide-react';
 
 export default function ConfirmDeleteModal({ 
@@ -18,10 +20,11 @@ export default function ConfirmDeleteModal({
     }
   };
 
-  return (
+  const modalContent = (
     <div 
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]"
       onClick={handleBackdropClick}
+      style={{ zIndex: 9999 }}
     >
       <div className="bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4 overflow-hidden">
         {/* Header */}
@@ -81,4 +84,6 @@ export default function ConfirmDeleteModal({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }
