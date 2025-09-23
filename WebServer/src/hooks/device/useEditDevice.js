@@ -4,7 +4,7 @@ import { useGlobalDevice } from '../../context/GlobalDevice.jsx';
 
 const useEditDevice = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id, registerId } = useParams();
   const { 
     getDeviceById, 
     getRegistersByDevice, 

@@ -11,3 +11,6 @@ change.sh
 
 
 .env.local
+
+
+/mosquitto/config/password.txt 

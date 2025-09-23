@@ -1,6 +1,6 @@
 
 import time
-from config.config import ConfigManager
+from src.config.config import ConfigManager
 def main():
     while True:
         time.sleep(1)

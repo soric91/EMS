@@ -16,9 +16,9 @@ function TheadConfig() {
                 <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider">
                     Conexión
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                {/* <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider">
                     Registros
-                </th>
+                </th> */}
                 <th className="px-6 py-4 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider">
                     Última Lectura
                 </th>

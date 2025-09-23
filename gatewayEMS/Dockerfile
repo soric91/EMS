@@ -6,8 +6,7 @@ FROM python:3.12-slim
 COPY --from=ghcr.io/astral-sh/uv:0.5.11 /uv /uvx /bin/
 
 
-ENV VIRTUAL_ENV=.venv
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
 ENV PYTHONUNBUFFERED=1
 ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy

@@ -1,14 +1,19 @@
-import { Trash, Play, Settings, Database } from "lucide-react";
+import React, { useState } from "react";
+import { Trash, Play, Settings, Database, ChevronDown, ChevronRight } from "lucide-react";
 import TheadConfig from "../ui/Thead/TheadConfig";
 import { Link } from "react-router-dom";
 import { useGlobalDevice } from "../../context/GlobalDevice";
 import ConfirmDeleteModal from  "./ConfirmDeleteModal.jsx"
 import { useDeleteDeviceModal } from "../../hooks/device/useModalState.js";
+import ModbusInfoTable from "./ModbusInfoTable.jsx";
 // /edit-device-modbus/:id"
 
 export default function DeviceTable() {
     const { devices } = useGlobalDevice();
     console.log("Devices in DeviceTable:", devices);
+    
+    // Estado para controlar qué filas están expandidas
+    const [expandedRows, setExpandedRows] = useState(new Set());
 
     const {
     isModalOpen,
@@ -17,6 +22,19 @@ export default function DeviceTable() {
     closeModal,
     confirmDelete,
   } = useDeleteDeviceModal();
+
+    // Función para toggle del estado expandido
+    const toggleExpanded = (deviceId) => {
+        setExpandedRows(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(deviceId)) {
+                newSet.delete(deviceId);
+            } else {
+                newSet.add(deviceId);
+            }
+            return newSet;
+        });
+    };
 
     const getConnectionInfo = (device) => {
         if (device.protocol === 'TCP' && device.ipAddress) {
@@ -49,23 +67,40 @@ export default function DeviceTable() {
                             </tr>
                         ) : (
                             devices.map((d, i) => (
-                            <tr
-                                key={i}
-                                className="group hover:bg-zinc-800/30 transition-all duration-200"
-                            >
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30 flex items-center justify-center">
-                                            <span className="text-xs font-bold text-blue-400">
-                                                {d.deviceName.charAt(0).toUpperCase()}
-                                            </span>
+                            <React.Fragment key={d.id || i}>
+                                <tr
+                                    className="group hover:bg-zinc-800/30 transition-all duration-200"
+                                >
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-3">
+                                            {/* Botón para expandir/colapsar */}
+                                            <button
+                                                onClick={() => toggleExpanded(d.id)}
+                                                className="p-1 rounded hover:bg-zinc-700/50 transition-colors"
+                                                title={expandedRows.has(d.id) ? "Colapsar" : "Expandir"}
+                                            >
+                                                {expandedRows.has(d.id) ? (
+                                                    <ChevronDown className="w-4 h-4 text-zinc-400" />
+                                                ) : (
+                                                    <ChevronRight className="w-4 h-4 text-zinc-400" />
+                                                )}
+                                            </button>
+                                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30 flex items-center justify-center">
+                                                <span className="text-xs font-bold text-blue-400">
+                                                    {d.deviceName.charAt(0).toUpperCase()}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <p className="font-medium text-white">{d.deviceName}</p>
+                                                <p className="text-xs text-zinc-400">
+                                                    {d.InfoModbus && d.InfoModbus.length > 0 
+                                                        ? `${d.InfoModbus.length} registros Modbus` 
+                                                        : "Sin registros"
+                                                    }
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p className="font-medium text-white">{d.deviceName}</p>
-                                            <p className="text-xs text-zinc-400">ID: {d.modbusId}</p>
-                                        </div>
-                                    </div>
-                                </td>
+                                    </td>
                                 <td className="px-6 py-4">
                                     <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-zinc-700/50 text-zinc-300 border border-zinc-600/30">
                                         {d.deviceType}
@@ -95,7 +130,7 @@ export default function DeviceTable() {
                                         {d.protocol === 'TCP' ? 'Modbus TCP' : 'Modbus RTU'}
                                     </div>
                                 </td>
-                                <td className="px-6 py-4 text-zinc-300">{d.registers}</td>
+                                {/* <td className="px-6 py-4 text-zinc-300">{d.registers}</td> */}
                                 <td className="px-6 py-4">
                                     <div className="text-zinc-300 text-sm">{d.lastRead}</div>
                                 </td>
@@ -126,7 +161,17 @@ export default function DeviceTable() {
                                     </div>
                                 </td>
                             </tr>
-                            ))
+                            
+                            {/* Fila expandible para mostrar registros Modbus */}
+                            {expandedRows.has(d.id) && (
+                                <tr>
+                                    <td colSpan="7" className="p-0">
+                                        <ModbusInfoTable infoModbus={d.InfoModbus} idDevice={d.id} />
+                                    </td>
+                                </tr>
+                            )}
+                        </React.Fragment>
+                        ))
                         )}
                     </tbody>
                 </table>

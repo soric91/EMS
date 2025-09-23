@@ -7,8 +7,8 @@ services:
 
     volumes:
       - ./gatewayEMS:/gatewayEMS
-      - ./Shared/config.ini:/gatewayEMS/config/config.ini
-      - ./Shared/gateway_ems.log:/gatewayEMS/log/gateway_ems.log
+      - ./Shared/config.ini:/gatewayEMS/src/config/config.ini
+      - ./Shared/gateway_ems.log:/gatewayEMS/src/log/gateway_ems.log
     networks:
       - networkEMS
     # devices:
@@ -75,6 +75,20 @@ services:
       - "${port}:3000"
     environment:
       - port=${port}
+    networks:
+      - networkEMS
+
+  mqtt:
+    image: eclipse-mosquitto:2
+    container_name: mqtt_ems
+    restart: always
+    ports:
+      - "1883:1883"   # Puerto MQTT
+      - "9001:9001"   # WebSockets opcional
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
     networks:
       - networkEMS
 

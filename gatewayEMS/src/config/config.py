@@ -4,7 +4,7 @@ from pathlib import Path
 
 @dataclass
 class ConfigManager:
-    config_file: str = '/gatewayEMS/config/config.ini'
+    config_file: str = 'src/config/config.ini'
     config: configparser.ConfigParser = field(default_factory=configparser.ConfigParser)
 
     def __post_init__(self):

@@ -39,7 +39,7 @@ const App = () => {
             </ProtectedRoute>
           } />
 
-          <Route path="/edit-device-modbus/:id" element={
+          <Route path="/edit-device-modbus/:id/:registerId" element={
             <ProtectedRoute>
               <AppLayout><EditDeviceModbus /></AppLayout>
             </ProtectedRoute>
