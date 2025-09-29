@@ -1,6 +1,16 @@
 /**
  * Gestor de datos local usando localStorage
  * Maneja dispositivos y registros Modbus para el EMS
+ * 
+ * FLUJO DE TRABAJO:
+ * 1. Primera fase: Registro de dispositivo básico (addDevice) - Sin configuración Modbus
+ * 2. Segunda fase: Configuración de registros Modbus (addModbusRegister, updateModbusRegister, deleteModbusRegister)
+ * 
+ * ESTRUCTURA:
+ * - Cada dispositivo tiene un UUID único
+ * - Los registros Modbus se almacenan en device.InfoModbus[]
+ * - Cada registro Modbus tiene su propio ID para gestión individual
+ * - Soporte para múltiples APIs: una para dispositivos, otra para configuración Modbus
  */
 import { v4 as uuidv4 } from 'uuid';
 
@@ -58,34 +68,16 @@ class EMSDataManager {
   }
 
   /**
-     * Agrega un nuevo dispositivo
-     * @param {Object} device - Datos del dispositivo
-     * @returns {Array} infoDeviceModbus
-     */
-
-  InfoModbus(device) {
-    const cantidad = parseInt(device.modbusId) || 1;
-
-    return Array.from({ length: cantidad }, (_, index) => {
-      const id = index + 1;
-      return {
-        id: id.toString(),
-        modbusId: id.toString(),
-        startAddress: device.startAddress || "0",
-        registers: device.registers || "1"
-      };
-    });
-
-
-
-  }
-
-  /**
-   * Agrega un nuevo dispositivo
+   * Genera información de conexión basada en el protocolo
    * @param {Object} device - Datos del dispositivo
-   * @returns {Object} infoDevice
+   * @returns {Object} Información de conexión específica del protocolo
    */
 
+  /**
+   * Genera información de conexión basada en el protocolo
+   * @param {Object} device - Datos del dispositivo
+   * @returns {Object} Información de conexión específica del protocolo
+   */
   InfoByprotocol(device) {
     if (device.protocol === 'TCP') {
       return {
@@ -99,23 +91,23 @@ class EMSDataManager {
         dataBits: device.dataBits || 8,
         stopBits: device.stopBits || 1,
         parity: device.parity || 'None'
-
       };
     }
-    // Puedes agregar otros protocolos aquí si es necesario
     return {};
   }
 
   /**
-   * Agrega un nuevo dispositivo
-   * @param {Object} device - Datos del dispositivo
-   * @returns {Object} Dispositivo agregado con ID
+   * Agrega un nuevo dispositivo (sin configuración Modbus inicial)
+   * @param {Object} device - Datos básicos del dispositivo
+   * @returns {Object} Dispositivo agregado con UUID
    */
   addDevice(device) {
     try {
       const devices = this.getDevices();
+      const deviceId = device.id || uuidv4(); // Usar ID proporcionado o generar uno nuevo
+      
       const newDevice = {
-        id: uuidv4(), // ID único como UUID string
+        id: deviceId,
         status: 'Disconnected',
         lastRead: 'Never',
         deviceType: device.deviceType || 'Unknown',
@@ -123,9 +115,7 @@ class EMSDataManager {
         description: device.description || '',
         protocol: device.protocol || 'TCP',
         ...this.InfoByprotocol(device),
-        InfoModbus: this.InfoModbus(device),
-
-
+        InfoModbus: device.InfoModbus || [], // Inicializar vacío, se llenará después
         createdAt: new Date().toISOString()
       };
 
@@ -200,11 +190,142 @@ class EMSDataManager {
   getDeviceById(deviceId) {
     try {
       const devices = this.getDevices();
-      // Los dispositivos ahora usan UUID, no convertir a número
       return devices.find(d => d.id === deviceId) || null;
     } catch (error) {
       console.error('Error getting device by ID:', error);
       return null;
+    }
+  }
+
+  // ===========================================
+  // GESTIÓN DE REGISTROS MODBUS
+  // ===========================================
+
+  /**
+   * Agrega un registro Modbus a un dispositivo específico
+   * @param {string} deviceId - UUID del dispositivo
+   * @param {Object} modbusConfig - Configuración del registro Modbus
+   * @returns {Object|null} Dispositivo actualizado o null si falla
+   */
+  addModbusRegister(deviceId, modbusConfig) {
+    try {
+      const devices = this.getDevices();
+      const deviceIndex = devices.findIndex(d => d.id === deviceId);
+
+      if (deviceIndex === -1) {
+        console.error('Dispositivo no encontrado con ID:', deviceId);
+        return null;
+      }
+
+      const device = devices[deviceIndex];
+      const newModbusRegister = {
+        id: modbusConfig.id || uuidv4(),
+        modbusId: modbusConfig.modbusId,
+        startAddress: modbusConfig.startAddress,
+        registers: modbusConfig.registers,
+        createdAt: new Date().toISOString()
+      };
+
+      // Agregar el registro a InfoModbus del dispositivo
+      device.InfoModbus = device.InfoModbus || [];
+      device.InfoModbus.push(newModbusRegister);
+      device.updatedAt = new Date().toISOString();
+
+      devices[deviceIndex] = device;
+      this.saveDevices(devices);
+
+      return device;
+    } catch (error) {
+      console.error('Error adding Modbus register:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Actualiza un registro Modbus específico de un dispositivo
+   * @param {string} deviceId - UUID del dispositivo
+   * @param {string} registerId - ID del registro Modbus
+   * @param {Object} updates - Datos a actualizar
+   * @returns {Object|null} Dispositivo actualizado o null si falla
+   */
+  updateModbusRegister(deviceId, registerId, updates) {
+    try {
+      const devices = this.getDevices();
+      const deviceIndex = devices.findIndex(d => d.id === deviceId);
+
+      if (deviceIndex === -1) {
+        console.error('Dispositivo no encontrado con ID:', deviceId);
+        return null;
+      }
+
+      const device = devices[deviceIndex];
+      const registerIndex = device.InfoModbus.findIndex(r => r.id === registerId);
+
+      if (registerIndex === -1) {
+        console.error('Registro Modbus no encontrado con ID:', registerId);
+        return null;
+      }
+
+      // Actualizar el registro específico
+      device.InfoModbus[registerIndex] = {
+        ...device.InfoModbus[registerIndex],
+        ...updates,
+        updatedAt: new Date().toISOString()
+      };
+      device.updatedAt = new Date().toISOString();
+
+      devices[deviceIndex] = device;
+      this.saveDevices(devices);
+
+      return device;
+    } catch (error) {
+      console.error('Error updating Modbus register:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Elimina un registro Modbus específico de un dispositivo
+   * @param {string} deviceId - UUID del dispositivo
+   * @param {string} registerId - ID del registro Modbus
+   * @returns {Object|null} Dispositivo actualizado o null si falla
+   */
+  deleteModbusRegister(deviceId, registerId) {
+    try {
+      const devices = this.getDevices();
+      const deviceIndex = devices.findIndex(d => d.id === deviceId);
+
+      if (deviceIndex === -1) {
+        console.error('Dispositivo no encontrado con ID:', deviceId);
+        return null;
+      }
+
+      const device = devices[deviceIndex];
+      device.InfoModbus = device.InfoModbus.filter(r => r.id !== registerId);
+      device.updatedAt = new Date().toISOString();
+
+      devices[deviceIndex] = device;
+      this.saveDevices(devices);
+
+      return device;
+    } catch (error) {
+      console.error('Error deleting Modbus register:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Obtiene todos los registros Modbus de un dispositivo
+   * @param {string} deviceId - UUID del dispositivo
+   * @returns {Array} Lista de registros Modbus
+   */
+  getModbusRegistersByDevice(deviceId) {
+    try {
+      const device = this.getDeviceById(deviceId);
+      return device ? (device.InfoModbus || []) : [];
+    } catch (error) {
+      console.error('Error getting Modbus registers by device:', error);
+      return [];
     }
   }
 
@@ -361,19 +482,91 @@ class EMSDataManager {
   }
 
   /**
-   * Actualiza el contador de registros activos de un dispositivo
+   * Actualiza el contador de registros Modbus activos de un dispositivo
    * @param {string} deviceId - ID del dispositivo (UUID)
    */
   updateDeviceRegisterCount(deviceId) {
     try {
-      const registers = this.getRegistersByDevice(deviceId);
-      // deviceId ahora es UUID, no convertir a número
+      const modbusRegisters = this.getModbusRegistersByDevice(deviceId);
       this.updateDevice(deviceId, {
-        registers: registers.length,
-        activeRegisters: registers.length
+        totalModbusRegisters: modbusRegisters.length,
+        lastModbusUpdate: new Date().toISOString()
       });
     } catch (error) {
       console.error('Error updating device register count:', error);
+    }
+  }
+
+  // ===========================================
+  // MÉTODOS PARA API - PREPARACIÓN DE DATOS
+  // ===========================================
+
+  /**
+   * Prepara los datos básicos del dispositivo para envío a API (primera fase)
+   * @param {string} deviceId - UUID del dispositivo
+   * @returns {Object|null} Datos del dispositivo listos para API
+   */
+  prepareDeviceForAPI(deviceId) {
+    try {
+      const device = this.getDeviceById(deviceId);
+      if (!device) return null;
+
+      return {
+        id: device.id,
+        deviceName: device.deviceName,
+        deviceType: device.deviceType,
+        description: device.description,
+        protocol: device.protocol,
+        connectionConfig: this.InfoByprotocol(device),
+        status: device.status,
+        createdAt: device.createdAt
+      };
+    } catch (error) {
+      console.error('Error preparing device for API:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Prepara los registros Modbus de un dispositivo para envío a API (segunda fase)
+   * @param {string} deviceId - UUID del dispositivo
+   * @returns {Object|null} Configuración Modbus lista para API
+   */
+  prepareModbusConfigForAPI(deviceId) {
+    try {
+      const device = this.getDeviceById(deviceId);
+      if (!device) return null;
+
+      return {
+        deviceId: device.id,
+        modbusRegisters: device.InfoModbus || [],
+        totalRegisters: (device.InfoModbus || []).length,
+        lastUpdate: device.updatedAt || device.createdAt
+      };
+    } catch (error) {
+      console.error('Error preparing Modbus config for API:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Marca un dispositivo como sincronizado con la API
+   * @param {string} deviceId - UUID del dispositivo
+   * @param {string} syncType - Tipo de sincronización ('device' | 'modbus')
+   * @returns {boolean} true si se actualizó correctamente
+   */
+  markDeviceAsSynced(deviceId, syncType = 'device') {
+    try {
+      const updateData = {
+        [`${syncType}SyncedAt`]: new Date().toISOString(),
+        [`${syncType}SyncStatus`]: 'synced'
+      };
+
+      const result = this.updateDevice(deviceId, updateData);
+      return result !== null;
+    } catch (error) {
+      console.error('Error marking device as synced:', error);
+      return false;
     }
   }
 
@@ -435,16 +628,35 @@ class EMSDataManager {
       const devices = this.getDevices();
       const registers = this.getRegisters();
 
+      // Contar registros Modbus en dispositivos
+      const totalModbusRegisters = devices.reduce((count, device) => {
+        return count + (device.InfoModbus ? device.InfoModbus.length : 0);
+      }, 0);
+
       return {
         totalDevices: devices.length,
         connectedDevices: devices.filter(d => d.status === 'Connected').length,
-        totalRegisters: registers.length,
-        activeRegisters: registers.filter(r => r.status === 'success').length,
+        devicesWithModbus: devices.filter(d => d.InfoModbus && d.InfoModbus.length > 0).length,
+        totalModbusRegisters: totalModbusRegisters,
+        syncedDevices: devices.filter(d => d.deviceSyncStatus === 'synced').length,
+        syncedModbusConfigs: devices.filter(d => d.modbusSyncStatus === 'synced').length,
+        // Mantener compatibilidad con registros antiguos
+        totalLegacyRegisters: registers.length,
+        activeLegacyRegisters: registers.filter(r => r.status === 'success').length,
         lastUpdate: new Date().toISOString()
       };
     } catch (error) {
       console.error('Error getting stats:', error);
-      return { totalDevices: 0, connectedDevices: 0, totalRegisters: 0, activeRegisters: 0 };
+      return { 
+        totalDevices: 0, 
+        connectedDevices: 0, 
+        devicesWithModbus: 0,
+        totalModbusRegisters: 0,
+        syncedDevices: 0,
+        syncedModbusConfigs: 0,
+        totalLegacyRegisters: 0, 
+        activeLegacyRegisters: 0 
+      };
     }
   }
 }

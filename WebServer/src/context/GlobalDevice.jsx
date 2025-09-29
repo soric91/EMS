@@ -127,6 +127,46 @@ export const GlobalDeviceProvider = ({ children }) => {
     }
   };
 
+  const updateDeviceModbusRegisters = async (deviceId, registerData, action = 'add') => {
+    try {
+      dispatch({ type: "SET_LOADING", payload: true });
+      dispatch({ type: "CLEAR_ERROR" });
+
+      const device = state.devices.find(d => d.id === deviceId);
+      if (!device) {
+        throw new Error('Device not found');
+      }
+
+      let updatedInfoModbus = [...(device.InfoModbus || [])];
+
+      if (action === 'add') {
+        updatedInfoModbus.push(registerData);
+      } else if (action === 'edit') {
+        const index = updatedInfoModbus.findIndex(r => r.id === registerData.id);
+        if (index !== -1) {
+          updatedInfoModbus[index] = registerData;
+        }
+      } else if (action === 'delete') {
+        updatedInfoModbus = updatedInfoModbus.filter(r => r.id !== registerData.id);
+      }
+
+      const updatedDevice = { ...device, InfoModbus: updatedInfoModbus };
+      const result = dataManager.updateDevice(deviceId, updatedDevice);
+      
+      if (result) {
+        dispatch({ type: "UPDATE_DEVICE", payload: updatedDevice });
+        return { success: true, device: updatedDevice };
+      } else {
+        throw new Error('Failed to update device');
+      }
+    } catch (error) {
+      const errorMessage = 'Error updating device Modbus registers';
+      dispatch({ type: "SET_ERROR", payload: errorMessage });
+      console.error('Error updating device Modbus registers:', error);
+      return { success: false, error: errorMessage };
+    }
+  };
+
   const getDeviceById = (deviceId) => {
     return state.devices.find(device => device.id === deviceId) || {};
   };
@@ -333,6 +373,7 @@ export const GlobalDeviceProvider = ({ children }) => {
     addDevice,
     updateDevice,
     deleteDevice,
+    updateDeviceModbusRegisters,
     getDeviceById,
     setSelectedDevice,
     

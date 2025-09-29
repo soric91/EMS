@@ -226,13 +226,14 @@ export default function DeviceTable({ onDeviceClick, onEditDevice }) {
                                 </td>
                             </tr>
                             
-                            {/* Fila expandible para mostrar registros Modbus */}
+                            {/* Fila expandible para mostrar registros Modbus específicos del dispositivo */}
                             {expandedRows.has(d.id) && (
                                 <tr>
                                     <td colSpan="7" className="p-0">
                                         <ModbusInfoTable 
-                                            infoModbus={d.InfoModbus} 
+                                            infoModbus={d.InfoModbus || []} 
                                             deviceId={d.id}
+                                            device={d} // Pasar el objeto device completo
                                             onAddRegister={handleAddRegister}
                                             onEditRegister={handleEditRegister}
                                             onDeleteRegister={handleDeleteRegister}

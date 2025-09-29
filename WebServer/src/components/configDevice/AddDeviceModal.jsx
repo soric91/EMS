@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { X, Server, Network, Settings, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, Server, Network, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import useDeviceForm from "../../hooks/device/useDeviceForm";
 
 const steps = [
   { id: 1, name: 'Información Básica', icon: Server },
   { id: 2, name: 'Conexión', icon: Network },
-  { id: 3, name: 'Configuración Modbus', icon: Settings },
-  { id: 4, name: 'Finalizar', icon: CheckCircle }
+  { id: 3, name: 'Finalizar', icon: CheckCircle }
 ];
 
 export default function AddDeviceModal({ isOpen, onClose }) {
@@ -268,76 +267,6 @@ export default function AddDeviceModal({ isOpen, onClose }) {
 
       case 3:
         return (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-2">
-                  ID Modbus *
-                </label>
-                <input
-                  {...register("modbusId", { 
-                    required: "El ID Modbus es requerido",
-                    min: { value: 1, message: "Mínimo: 1" },
-                    max: { value: 255, message: "Máximo: 255" }
-                  })}
-                  type="number"
-                  defaultValue={1}
-                  className="w-full bg-zinc-800/50 border border-zinc-700/50 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/25 focus:outline-none transition-all duration-200"
-                />
-                {errors.modbusId && (
-                  <p className="mt-1 text-sm text-red-400">{errors.modbusId.message}</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-2">
-                  Dirección Inicial *
-                </label>
-                <input
-                  {...register("startAddress", { 
-                    required: "La dirección inicial es requerida",
-                    min: { value: 0, message: "Mínimo: 0" }
-                  })}
-                  type="number"
-                  defaultValue={0}
-                  className="w-full bg-zinc-800/50 border border-zinc-700/50 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/25 focus:outline-none transition-all duration-200"
-                />
-                {errors.startAddress && (
-                  <p className="mt-1 text-sm text-red-400">{errors.startAddress.message}</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-2">
-                  Número de Registros *
-                </label>
-                <input
-                  {...register("registers", { 
-                    required: "El número de registros es requerido",
-                    min: { value: 1, message: "Mínimo: 1" },
-                    max: { value: 125, message: "Máximo: 125" }
-                  })}
-                  type="number"
-                  defaultValue={10}
-                  className="w-full bg-zinc-800/50 border border-zinc-700/50 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/25 focus:outline-none transition-all duration-200"
-                />
-                {errors.registers && (
-                  <p className="mt-1 text-sm text-red-400">{errors.registers.message}</p>
-                )}
-              </div>
-            </div>
-            
-            <div className="p-4 bg-zinc-800/30 border border-zinc-700/30 rounded-xl">
-              <h4 className="text-sm font-medium text-zinc-300 mb-2">Información sobre Registros Modbus</h4>
-              <div className="text-xs text-zinc-500 space-y-1">
-                <p>• <strong>ID Modbus:</strong> Identificador único del dispositivo esclavo (1-255)</p>
-                <p>• <strong>Dirección Inicial:</strong> Primera dirección de registro a leer</p>
-                <p>• <strong>Número de Registros:</strong> Cantidad de registros consecutivos a leer</p>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 4:
-        return (
           <div className="space-y-6 text-center">
             <div className="mx-auto w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
               <CheckCircle className="w-8 h-8 text-white" />
@@ -345,7 +274,7 @@ export default function AddDeviceModal({ isOpen, onClose }) {
             <div>
               <h3 className="text-xl font-semibold text-white mb-2">¡Listo para Crear!</h3>
               <p className="text-zinc-400">
-                Revisa la configuración y haz clic en "Crear Dispositivo" para finalizar.
+                El dispositivo se creará sin registros Modbus. Podrás agregarlos después expandiendo la fila del dispositivo.
               </p>
             </div>
             <div className="text-left bg-zinc-800/30 border border-zinc-700/30 rounded-xl p-4 space-y-3">
@@ -362,8 +291,8 @@ export default function AddDeviceModal({ isOpen, onClose }) {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span>ID Modbus:</span>
-                  <span className="text-white">1</span>
+                  <span>Registros Modbus:</span>
+                  <span className="text-yellow-400">Se configurarán después</span>
                 </div>
               </div>
             </div>
@@ -386,7 +315,7 @@ export default function AddDeviceModal({ isOpen, onClose }) {
                 <Server className="w-4 h-4 text-white" />
               </div>
               <div>
-                <h2 className="text-base font-semibold">Agregar Dispositivo Modbus</h2>
+                <h2 className="text-base font-semibold">Agregar Dispositivo</h2>
                 <p className="text-xs text-zinc-400">Paso {currentStep} de {steps.length}</p>
               </div>
             </div>

@@ -258,14 +258,16 @@ const DeviceDetailPage = () => {
           />
         )}
 
-        {/* Register Form Modal */}
+        {/* Register Form Modal - Específico para este dispositivo */}
         {showRegisterForm && (
           <ModbusRegisterForm 
-            idDevice={deviceId}
+            idDevice={deviceId || id}
+            device={device}
             isEdit={editingRegister !== null}
             existingData={editingRegister}
             onSave={handleSaveRegister}
             onCancel={handleCancelRegister}
+            specificDevice={true} // Flag para indicar que es específico del dispositivo
           />
         )}
       </div>

@@ -17,10 +17,7 @@ export default function useDeviceForm(onClose) {
       baudRate: '9600',
       dataBits: '8',
       parity: 'N',
-      stopBits: '1',
-      modbusId: 1,
-      startAddress: 0,
-      registers: 10
+      stopBits: '1'
     }
   });
   const [protocol, setProtocol] = useState("TCP");
@@ -36,14 +33,14 @@ export default function useDeviceForm(onClose) {
     // Clear fields based on protocol
     if (newProtocol === "TCP") {
       setValue('serialPort', '');
-      setValue('baudRate', '9600');
-      setValue('dataBits', '8');
-      setValue('parity', 'N');
-      setValue('stopBits', '1');
-      setValue('port', 502);
+      setValue('baudRate', '');
+      setValue('dataBits', '');
+      setValue('parity', '');
+      setValue('stopBits', '');
+
     } else if (newProtocol === "RTU") {
       setValue('ipAddress', '');
-      setValue('port', 502);
+      setValue('port', '');
     }
   };
 
@@ -55,10 +52,11 @@ export default function useDeviceForm(onClose) {
     const deviceconfigparms = {
         id: uuidv4(),
         ...data,
-        protocol
+        protocol,
+        InfoModbus: [] // Inicializar sin registros Modbus, se agregarán después
     }
     const result = await addDevice(deviceconfigparms);
-    console.log("Datos guardados:", result);
+    console.log("Dispositivo creado:", result);
     if (onClose) onClose();  // cerrar modal
     resetForm();             // limpiar form
   };

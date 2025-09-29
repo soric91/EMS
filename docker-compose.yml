@@ -9,6 +9,7 @@ services:
       - ./gatewayEMS:/gatewayEMS
       - ./Shared/config.ini:/gatewayEMS/src/config/config.ini
       - ./Shared/gateway_ems.log:/gatewayEMS/src/log/gateway_ems.log
+      - ./Shared/command.json:/gatewayEMS/src/config/command.json
     networks:
       - networkEMS
     # devices:
@@ -26,6 +27,7 @@ services:
       - ./Shared/config.ini:/gatewayApi/src/config/config.ini
       - ./gatewayApi:/gatewayApi
       - ./Shared/gateway_ems.log:/gatewayApi/src/log/gateway_ems.log
+      - ./Shared/command.json:/gatewayApi/src/config/command.json
     networks:
       - networkEMS
     # devices:

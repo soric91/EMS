@@ -3,14 +3,23 @@ import { X, Settings, Plus, Edit } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import useModbusRegisterForm from "../../hooks/device/useModbusRegisterForm";
 
-export default function AddModbusRegisterModal({ isOpen, onClose, deviceId, editRegister = null }) {
+export default function AddModbusRegisterModal({ 
+  isOpen, 
+  onClose, 
+  deviceId, 
+  device, // Agregar el objeto device
+  editRegister = null 
+}) {
   const {
     register,
     handleSubmit,
     onSubmit,
     formState,
-    resetForm
-  } = useModbusRegisterForm(deviceId, onClose, editRegister);
+    resetForm,
+    currentDevice,
+    validateRegisterForDevice,
+    getDeviceSpecificDefaults
+  } = useModbusRegisterForm(deviceId, device, onClose, editRegister);
   
   const errors = formState?.errors || {};
 
@@ -38,8 +47,19 @@ export default function AddModbusRegisterModal({ isOpen, onClose, deviceId, edit
                   {isEditing ? 'Editar Registro Modbus' : 'Agregar Registro Modbus'}
                 </h2>
                 <p className="text-sm text-zinc-400">
-                  {isEditing ? 'Modifica la configuración del registro' : 'Configura un nuevo registro para el dispositivo'}
+                  {currentDevice ? 
+                    `${isEditing ? 'Modifica el registro' : 'Nuevo registro'} para ${currentDevice.deviceName} (${currentDevice.deviceType})` :
+                    'Configura un nuevo registro para el dispositivo'
+                  }
                 </p>
+                {currentDevice && (
+                  <p className="text-xs text-zinc-500 mt-1">
+                    {currentDevice.protocol} - {currentDevice.protocol === 'TCP' ? 
+                      `${currentDevice.ipAddress}:${currentDevice.port}` : 
+                      currentDevice.serialPort
+                    }
+                  </p>
+                )}
               </div>
             </div>
             <button

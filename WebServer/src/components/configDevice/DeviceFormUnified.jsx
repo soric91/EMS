@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
-import { X, Server, Network, CheckCircle, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react';
+import { X, Server, Network, CheckCircle, ChevronLeft, ChevronRight, ArrowLeft, Database } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import useDeviceForm from "../../hooks/device/useDeviceForm";
+import AddModbusRegisterModal from './AddModbusRegisterModal.jsx';
 
 const steps = [
   { id: 1, name: 'Información Básica', icon: Server },
   { id: 2, name: 'Conexión', icon: Network },
-  { id: 3, name: 'Finalizar', icon: CheckCircle }
+  { id: 3, name: 'Confirmación', icon: CheckCircle },
+  { id: 4, name: 'Registros Modbus', icon: Database }
 ];
 
 /**
@@ -31,16 +33,21 @@ export default function DeviceFormUnified({
 }) {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
+  const [createdDeviceId, setCreatedDeviceId] = useState(null);
+  const [deviceRegisters, setDeviceRegisters] = useState([]);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [editingRegister, setEditingRegister] = useState(null);
   
   const {
     register,
     handleSubmit,
     protocol,
     setProtocol,
-    onSubmit,
+    onSubmit: originalOnSubmit,
     formState,
     resetForm,
-    setValue
+    setValue,
+    getValues
   } = useDeviceForm(handleFormClose);
   
   // Configurar valores iniciales si estamos editando
@@ -60,6 +67,58 @@ export default function DeviceFormUnified({
       setProtocol(device.protocol || 'TCP');
     }
   }, [device, setValue, setProtocol]);
+
+  // Función personalizada de submit que captura el ID del dispositivo creado
+  const handleDeviceSubmit = async (data) => {
+    const result = await originalOnSubmit(data);
+    
+    // Si se creó un dispositivo nuevo, capturar su ID
+    if (!device && result && result.deviceId) {
+      setCreatedDeviceId(result.deviceId);
+      setCurrentStep(3); // Ir al paso de confirmación
+      return result;
+    }
+    
+    // Si es edición, proceder normalmente
+    if (device) {
+      handleFormClose();
+      return result;
+    }
+  };
+
+  // Funciones para manejar registros
+  const handleAddRegister = () => {
+    setEditingRegister(null);
+    setShowRegisterModal(true);
+  };
+
+  const handleEditRegister = (register) => {
+    setEditingRegister(register);
+    setShowRegisterModal(true);
+  };
+
+  const handleSaveRegister = (registerData) => {
+    if (editingRegister) {
+      // Editar registro existente
+      setDeviceRegisters(prev => 
+        prev.map(reg => reg.id === editingRegister.id ? registerData : reg)
+      );
+    } else {
+      // Agregar nuevo registro
+      setDeviceRegisters(prev => [...prev, registerData]);
+    }
+    setShowRegisterModal(false);
+    setEditingRegister(null);
+  };
+
+  const handleDeleteRegister = (registerId) => {
+    setDeviceRegisters(prev => prev.filter(reg => reg.id !== registerId));
+  };
+
+  const handleFinishConfiguration = () => {
+    // Finalizar configuración y cerrar
+    handleFormClose();
+  };
 
   // Safe access to errors with fallback
   const errors = formState?.errors || {};
@@ -270,18 +329,138 @@ export default function DeviceFormUnified({
 
       case 3:
         return (
-          <div className="text-center space-y-6">
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-green-500/10 to-blue-500/10 border border-green-500/20">
-              <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-4" />
+          <div className="space-y-6">
+            <div className="text-center space-y-4">
+              <div className="p-6 rounded-2xl bg-gradient-to-br from-green-500/10 to-blue-500/10 border border-green-500/20">
+                <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-white mb-2">
+                  {device ? 'Dispositivo Actualizado' : '¡Dispositivo Creado!'}
+                </h3>
+                <p className="text-zinc-400 mb-4">
+                  {device 
+                    ? 'Los cambios se han guardado correctamente'
+                    : 'Ahora vamos a configurar los registros Modbus específicos para este dispositivo'
+                  }
+                </p>
+              </div>
+              
+              {!device && (
+                <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
+                  <h4 className="text-lg font-medium text-blue-400 mb-2">
+                    Siguiente paso: Registros Modbus
+                  </h4>
+                  <p className="text-sm text-zinc-400 mb-3">
+                    Configura los registros Modbus específicos para tu dispositivo {protocol === 'TCP' ? 'Modbus TCP' : 'Modbus RTU'}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentStep(4)} // Agregar paso 4
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors text-sm font-medium"
+                  >
+                    Configurar Registros Modbus
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+
+      case 4:
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-6">
               <h3 className="text-xl font-semibold text-white mb-2">
-                {device ? 'Dispositivo Actualizado' : '¡Dispositivo Listo!'}
+                Configurar Registros Modbus
               </h3>
               <p className="text-zinc-400">
-                {device 
-                  ? 'Los cambios se han guardado correctamente'
-                  : 'El dispositivo está configurado y listo para usar'
-                }
+                Agrega los registros específicos para tu dispositivo {getValues('deviceName')}
               </p>
+            </div>
+            
+            <div className="bg-zinc-800/30 rounded-xl p-6 border border-zinc-700/30">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="text-lg font-medium text-white">
+                  Registros Configurados ({deviceRegisters.length})
+                </h4>
+                <button
+                  type="button"
+                  onClick={handleAddRegister}
+                  className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg transition-colors text-sm font-medium"
+                >
+                  <Database className="w-4 h-4" />
+                  <span>Agregar Registro</span>
+                </button>
+              </div>
+              
+              {/* Lista de registros agregados */}
+              {deviceRegisters.length === 0 ? (
+                <div className="text-center py-8">
+                  <Database className="w-12 h-12 text-zinc-500 mx-auto mb-3" />
+                  <div className="text-sm text-zinc-400 mb-3">
+                    No hay registros configurados aún.
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleAddRegister}
+                    className="text-blue-400 hover:text-blue-300 text-sm font-medium"
+                  >
+                    Agregar primer registro Modbus
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {deviceRegisters.map((register, index) => (
+                    <div key={register.id} className="bg-zinc-900/50 rounded-lg p-4 border border-zinc-700/30">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          <div className="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-lg font-mono text-sm">
+                            ID: {register.modbusId}
+                          </div>
+                          <div className="text-sm text-zinc-300">
+                            <span className="font-medium">Addr:</span> {register.startAddress}
+                          </div>
+                          <div className="text-sm text-zinc-300">
+                            <span className="font-medium">Regs:</span> {register.registers}
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => handleEditRegister(register)}
+                            className="p-2 text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors"
+                            title="Editar registro"
+                          >
+                            <ChevronRight className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteRegister(register.id)}
+                            className="p-2 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                            title="Eliminar registro"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {deviceRegisters.length > 0 && (
+                <div className="mt-6 p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm text-green-400">
+                      ✅ {deviceRegisters.length} registro(s) configurado(s)
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleFinishConfiguration}
+                      className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg transition-colors text-sm font-medium"
+                    >
+                      Finalizar Configuración
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         );
@@ -345,13 +524,13 @@ export default function DeviceFormUnified({
       </div>
 
       {/* Step Content */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={handleSubmit(handleDeviceSubmit)} className="space-y-8">
         {renderStepContent()}
 
         {/* Navigation Buttons */}
         <div className="flex items-center justify-between pt-6 border-t border-zinc-700/50">
           <div>
-            {currentStep > 1 && (
+            {currentStep > 1 && currentStep < 4 && (
               <button
                 type="button"
                 onClick={prevStep}
@@ -359,6 +538,16 @@ export default function DeviceFormUnified({
               >
                 <ChevronLeft className="w-4 h-4" />
                 <span>Anterior</span>
+              </button>
+            )}
+            {currentStep === 4 && (
+              <button
+                type="button"
+                onClick={() => setCurrentStep(3)}
+                className="flex items-center space-x-2 px-6 py-2.5 text-zinc-400 hover:text-white border border-zinc-600/50 rounded-xl hover:border-zinc-500/50 hover:bg-zinc-700/30 transition-all duration-200"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                <span>Volver</span>
               </button>
             )}
           </div>
@@ -372,7 +561,7 @@ export default function DeviceFormUnified({
               Cancelar
             </button>
             
-            {currentStep < steps.length ? (
+            {currentStep < 3 ? (
               <button
                 type="button"
                 onClick={nextStep}
@@ -381,18 +570,54 @@ export default function DeviceFormUnified({
                 <span>Siguiente</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
-            ) : (
+            ) : currentStep === 3 && !device ? (
               <button
                 type="submit"
                 className="flex items-center space-x-2 px-6 py-2.5 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-500 hover:to-blue-500 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-green-500/25"
               >
                 <CheckCircle className="w-4 h-4" />
-                <span>{device ? 'Actualizar' : 'Crear'} Dispositivo</span>
+                <span>Crear Dispositivo</span>
               </button>
-            )}
+            ) : currentStep === 3 && device ? (
+              <button
+                type="submit"
+                className="flex items-center space-x-2 px-6 py-2.5 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-500 hover:to-blue-500 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-green-500/25"
+              >
+                <CheckCircle className="w-4 h-4" />
+                <span>Actualizar Dispositivo</span>
+              </button>
+            ) : currentStep === 4 && deviceRegisters.length === 0 ? (
+              <button
+                type="button"
+                onClick={handleFinishConfiguration}
+                className="flex items-center space-x-2 px-6 py-2.5 bg-zinc-600 hover:bg-zinc-500 text-white rounded-xl transition-all duration-200"
+              >
+                <span>Saltar Registros</span>
+              </button>
+            ) : null}
           </div>
         </div>
       </form>
+
+      {/* Modal de registro Modbus */}
+      {showRegisterModal && (
+        <AddModbusRegisterModal
+          isOpen={showRegisterModal}
+          onClose={() => {
+            setShowRegisterModal(false);
+            setEditingRegister(null);
+          }}
+          deviceId={createdDeviceId}
+          device={{
+            ...getValues(),
+            deviceType: getValues('deviceType'),
+            protocol: protocol,
+            id: createdDeviceId
+          }}
+          editRegister={editingRegister}
+          onSave={handleSaveRegister}
+        />
+      )}
     </div>
   );
 
