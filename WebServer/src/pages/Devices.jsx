@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import DeviceTable from '../components/configDevice/DeviceTable';
-import AddDeviceModal from '../components/configDevice/AddDeviceModal';
+import DeviceFormUnified from '../components/configDevice/DeviceFormUnified';
 import { useGlobalDevice } from '../context/GlobalDevice';
 import HeaderDevice from '../components/configDevice/HeaderDevice.jsx';
 import TotalDevice from '../components/configDevice/TotalDevice.jsx';
@@ -51,8 +51,13 @@ export default function DeviceManagement() {
         <DeviceTable />
       </div>
 
-      {/* Add Device Modal */}
-      <AddDeviceModal isOpen={openModal} onClose={() => setOpenModal(false)} />
+      {/* Add Device Modal - Usar componente unificado */}
+      <DeviceFormUnified
+        mode="modal"
+        isOpen={openModal}
+        onClose={() => setOpenModal(false)}
+        onSave={() => setOpenModal(false)}
+      />
       
       {/* Background decoration */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">

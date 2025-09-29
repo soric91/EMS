@@ -1,19 +1,23 @@
 import React, { useState } from "react";
-import { Trash, Play, Settings, Database, ChevronDown, ChevronRight } from "lucide-react";
+import { Trash, Play, Edit, Database, ChevronDown, ChevronRight, Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import TheadConfig from "../ui/Thead/TheadConfig";
-import { Link } from "react-router-dom";
 import { useGlobalDevice } from "../../context/GlobalDevice";
 import ConfirmDeleteModal from  "./ConfirmDeleteModal.jsx"
 import { useDeleteDeviceModal } from "../../hooks/device/useModalState.js";
 import ModbusInfoTable from "./ModbusInfoTable.jsx";
-// /edit-device-modbus/:id"
+import DeviceFormUnified from "./DeviceFormUnified.jsx";
 
-export default function DeviceTable() {
-    const { devices } = useGlobalDevice();
+export default function DeviceTable({ onDeviceClick, onEditDevice }) {
+    const navigate = useNavigate();
+    const { devices, updateDeviceModbusRegisters, updateDevice } = useGlobalDevice();
     console.log("Devices in DeviceTable:", devices);
     
     // Estado para controlar qué filas están expandidas
     const [expandedRows, setExpandedRows] = useState(new Set());
+    // Estado para el modal de edición de dispositivo
+    const [editingDevice, setEditingDevice] = useState(null);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     const {
     isModalOpen,
@@ -34,6 +38,52 @@ export default function DeviceTable() {
             }
             return newSet;
         });
+    };
+
+    // Funciones para manejar registros Modbus
+    const handleAddRegister = async (deviceId, registerData) => {
+        await updateDeviceModbusRegisters(deviceId, registerData, 'add');
+    };
+
+    const handleEditRegister = async (deviceId, registerData) => {
+        await updateDeviceModbusRegisters(deviceId, registerData, 'edit');
+    };
+
+    const handleDeleteRegister = async (deviceId, registerId) => {
+        if (window.confirm('¿Estás seguro de que quieres eliminar este registro?')) {
+            await updateDeviceModbusRegisters(deviceId, { id: registerId }, 'delete');
+        }
+    };
+
+    // Funciones para editar dispositivo
+    // Funciones de navegación mejoradas
+    const handleDeviceClick = (device) => {
+        if (onDeviceClick) {
+            onDeviceClick(device.id);
+        } else {
+            navigate(`/devices/${device.id}`);
+        }
+    };
+
+    const handleEditDeviceLocal = (device) => {
+        if (onEditDevice) {
+            onEditDevice(device);
+        } else {
+            // Usar modal local como fallback
+            setEditingDevice(device);
+            setIsEditModalOpen(true);
+        }
+    };
+
+    const handleSaveDevice = (deviceData) => {
+        updateDevice(editingDevice.id, deviceData);
+        setIsEditModalOpen(false);
+        setEditingDevice(null);
+    };
+
+    const handleCloseEditModal = () => {
+        setIsEditModalOpen(false);
+        setEditingDevice(null);
     };
 
     const getConnectionInfo = (device) => {
@@ -91,7 +141,12 @@ export default function DeviceTable() {
                                                 </span>
                                             </div>
                                             <div>
-                                                <p className="font-medium text-white">{d.deviceName}</p>
+                                                <button 
+                                                    onClick={() => handleDeviceClick(d)}
+                                                    className="text-left hover:text-blue-400 transition-colors cursor-pointer"
+                                                >
+                                                    <p className="font-medium text-white hover:text-blue-400 transition-colors">{d.deviceName}</p>
+                                                </button>
                                                 <p className="text-xs text-zinc-400">
                                                     {d.InfoModbus && d.InfoModbus.length > 0 
                                                         ? `${d.InfoModbus.length} registros Modbus` 
@@ -136,11 +191,20 @@ export default function DeviceTable() {
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                        <Link to={`/edit-device-modbus/${d.id}`}>
-                                            <button className="p-2 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 hover:border-blue-500/30 transition-all duration-200">
-                                                <Settings size={16} />
-                                            </button>
-                                        </Link>
+                                        <button 
+                                            onClick={() => handleDeviceClick(d)}
+                                            className="p-2 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 hover:bg-indigo-500/20 hover:border-indigo-500/30 transition-all duration-200"
+                                            title="Ver detalles"
+                                        >
+                                            <Eye size={16} />
+                                        </button>
+                                        <button 
+                                            onClick={() => handleEditDeviceLocal(d)}
+                                            className="p-2 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 hover:border-blue-500/30 transition-all duration-200"
+                                            title="Editar dispositivo"
+                                        >
+                                            <Edit size={16} />
+                                        </button>
                                         <button 
                                             className={`p-2 rounded-lg border transition-all duration-200 ${
                                                 d.status === "Disconnected" 
@@ -166,7 +230,13 @@ export default function DeviceTable() {
                             {expandedRows.has(d.id) && (
                                 <tr>
                                     <td colSpan="7" className="p-0">
-                                        <ModbusInfoTable infoModbus={d.InfoModbus} idDevice={d.id} />
+                                        <ModbusInfoTable 
+                                            infoModbus={d.InfoModbus} 
+                                            deviceId={d.id}
+                                            onAddRegister={handleAddRegister}
+                                            onEditRegister={handleEditRegister}
+                                            onDeleteRegister={handleDeleteRegister}
+                                        />
                                     </td>
                                 </tr>
                             )}
@@ -182,6 +252,17 @@ export default function DeviceTable() {
                 onClose={closeModal}
                 onConfirm={() => confirmDelete(selectedDevice.id)}
             />
+
+            {/* Modal de edición usando componente unificado */}
+            {isEditModalOpen && (
+                <DeviceFormUnified
+                    mode="modal"
+                    isOpen={isEditModalOpen}
+                    device={editingDevice}
+                    onClose={handleCloseEditModal}
+                    onSave={handleSaveDevice}
+                />
+            )}
 
         </div>
     );

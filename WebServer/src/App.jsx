@@ -6,6 +6,12 @@ import { GlobalProvider } from './context/GlobalState.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import Settings from './pages/Settings.jsx';
 
+// New modular device management components
+import DevicesListPage from './pages/DevicesListPage.jsx';
+import DeviceDetailPage from './pages/DeviceDetailPage.jsx';
+import DeviceFormPage from './pages/DeviceFormPage.jsx';
+
+// Legacy components (maintained for compatibility)
 import Devices from './pages/Devices.jsx';
 import Logs from './pages/Logs.jsx';
 import AppLayout from './components/Layout/AppLayout.jsx';
@@ -39,16 +45,55 @@ const App = () => {
             </ProtectedRoute>
           } />
 
-          <Route path="/edit-device-modbus/:id/:registerId" element={
+          {/* ===== NEW DEVICE MANAGEMENT ROUTES ===== */}
+          
+          {/* Main devices list (replaces old /devices) */}
+          <Route path="/devices" element={
             <ProtectedRoute>
-              <AppLayout><EditDeviceModbus /></AppLayout>
+              <AppLayout><DevicesListPage /></AppLayout>
             </ProtectedRoute>
           } />
-          <Route path="/devices" element={
+          
+          {/* Device detail view (replaces /edit-device-modbus/:id) */}
+          <Route path="/devices/:id" element={
+            <ProtectedRoute>
+              <AppLayout><DeviceDetailPage /></AppLayout>
+            </ProtectedRoute>
+          } />
+          
+          {/* Create new device */}
+          <Route path="/devices/new" element={
+            <ProtectedRoute>
+              <AppLayout><DeviceFormPage /></AppLayout>
+            </ProtectedRoute>
+          } />
+          
+          {/* Edit existing device */}
+          <Route path="/devices/:id/edit" element={
+            <ProtectedRoute>
+              <AppLayout><DeviceFormPage /></AppLayout>
+            </ProtectedRoute>
+          } />
+
+          {/* ===== COMPATIBILITY ROUTES (TEMPORARY) ===== */}
+          
+          {/* Redirect old device editing routes to new structure */}
+          <Route path="/edit-device-modbus/:id/:registerId" element={
+            <Navigate to="/devices" replace />
+          } />
+          <Route path="/edit-device-modbus/:id" element={
+            <Navigate to="/devices" replace />
+          } />
+          
+          {/* Keep old devices page as backup */}
+          <Route path="/devices-old" element={
             <ProtectedRoute>
               <AppLayout><Devices /></AppLayout>
             </ProtectedRoute>
           } />
+
+          {/* ===== OTHER ROUTES ===== */}
+          
           <Route path="/logs" element={
             <ProtectedRoute>
               <AppLayout><Logs /></AppLayout>
